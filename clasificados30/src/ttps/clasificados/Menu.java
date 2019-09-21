@@ -2,6 +2,7 @@ package ttps.clasificados;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ResourceBundle;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -36,6 +37,8 @@ public class Menu extends HttpServlet {
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String user = request.getAttribute("user").toString();
 		String role = request.getAttribute("role").toString();
+		String leng = request.getAttribute("leng").toString();
+		ResourceBundle rb = ResourceBundle.getBundle(leng);
 		response.setContentType("text/html");
 	    PrintWriter out = response.getWriter();
 		out.write("<!DOCTYPE html><html><head><meta charset=\\\"UTF-8\\\"><title>Admin</title></head><body>");
@@ -48,7 +51,7 @@ public class Menu extends HttpServlet {
 					System.out.println(e);
 				}
 			}
-			this.printAdminProfile(user, role, out);
+			this.printAdminProfile(user, role, out, rb);
 		} else if (role.equals("public")) {
 			if (dispatcher != null) {
 				try {
@@ -57,52 +60,62 @@ public class Menu extends HttpServlet {
 					System.out.println(e);
 				}
 			}
-			this.printPublicProfile(user, role, out);
+			this.printPublicProfile(user, role, out, rb);
 		} else {
-			this.printError(out);
+			this.printError(out, rb);
 		}
 		out.println("</body>\\n</html>");
 		
 	}
 
-	protected void printAdminProfile(String user, String role, PrintWriter out) {
+	protected void printAdminProfile(String user, String role, PrintWriter out, ResourceBundle rb) {
 		String adminProfile = String.format(
-				"<p>Welcome %s (%s).</p>" +
-				"<nav class=\"menu\">\n" + 
-				"  <ul>\n" + 
-				"    <li><a href=\"#\">Listar Usuarios Publicadores</a></li>\n" + 
-				"    <li><a href=\"#\">ABM de Administradores</a></li>\n" + 
-				"    <li><a href=\"#\">Ver Estadísticas</a></li>\n" + 
-				"  </ul>\n" + 
-				"</nav>\n",
-				user,
-				role
+			"<p>%s %s (%s).</p>" +
+			"<nav class=\"menu\">\n" + 
+			"  <ul>\n" + 
+			"    <li><a href=\"#\">%s</a></li>\n" + 
+			"    <li><a href=\"#\">%s</a></li>\n" + 
+			"    <li><a href=\"#\">%s</a></li>\n" + 
+			"  </ul>\n" + 
+			"</nav>\n",
+			rb.getString("lblwelcome"),
+			user,
+			role,
+			rb.getString("lbllisting"),
+			rb.getString("lblabmAdmin"),
+			rb.getString("lblstats")
 		);
 		out.println(adminProfile);
 		out.close();
 	}
 	
-	protected void printPublicProfile(String user, String role, PrintWriter out) {
+	protected void printPublicProfile(String user, String role, PrintWriter out, ResourceBundle rb) {
 		String publicProfile = String.format(
-				"<p>Welcome %s (%s).</p>" +
-				"<nav class=\"menu\">\n" + 
-				"  <ul>\n" + 
-				"    <li><a href=\"#\">Actualizar Datos de Contacto</a></li>\n" + 
-				"    <li><a href=\"#\">ABM de publicaciones</a></li>\n" + 
-				"    <li><a href=\"#\">Contestar consultas</a></li>\n" + 
-				"  </ul>\n" + 
-				"</nav>\n",
-				user,
-				role
+			"<p>%s %s (%s).</p>" +
+			"<nav class=\"menu\">\n" + 
+			"  <ul>\n" + 
+			"    <li><a href=\"#\">%s</a></li>\n" + 
+			"    <li><a href=\"#\">%s</a></li>\n" + 
+			"    <li><a href=\"#\">%s</a></li>\n" + 
+			"  </ul>\n" + 
+			"</nav>\n",
+			rb.getString("lblwelcome"),
+			user,
+			role,
+			rb.getString("lblupdate"),
+			rb.getString("lblabmuser"),
+			rb.getString("lblresponse")
 		);
 		out.println(publicProfile);
 		out.close();
 	}
 	
-	protected void printError(PrintWriter out) {
+	protected void printError(PrintWriter out, ResourceBundle rb) {
 		String errorMsg = String.format(
-				"<p>Your username or password is/are incorrect.</p>" +
-				"<p>Please try again.</p>"
+			"<p>%s</p>" +
+			"<p>%s</p>",
+			rb.getString("lblincorrect"),
+			rb.getString("lbltry")
 		);
 		out.println(errorMsg);
 		out.close();

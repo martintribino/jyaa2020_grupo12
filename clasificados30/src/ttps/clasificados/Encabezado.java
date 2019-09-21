@@ -2,6 +2,7 @@ package ttps.clasificados;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -31,15 +32,16 @@ public class Encabezado extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html");
+		ResourceBundle rb = ResourceBundle.getBundle((String) request.getAttribute("lenguaje"));
 		ServletContext sc = getServletContext();
 		String nombre = sc.getAttribute("nombre").toString();
 		String email = sc.getAttribute("email").toString();
 		String telefono = sc.getAttribute("telefono").toString();
 	    PrintWriter out = response.getWriter();
-		out.println(String.format("<h3>Site Information</h3>"));
-		out.println(String.format("<p>Nombre: %s.</p>", nombre));
-		out.println(String.format("<p>Email: %s.</p>", email));
-		out.println(String.format("<p>Tel&eacute;fono: %s.</p>", telefono));
+		out.println(String.format("<h3>%s</h3>", rb.getString("titulo")));
+		out.println(String.format("<p>%s: %s.</p>", rb.getString("lblnombre"), nombre));
+		out.println(String.format("<p>%s: %s.</p>", rb.getString("lblemail"), email));
+		out.println(String.format("<p>%s: %s.</p>", rb.getString("lbltelefono"), telefono));
 	}
 
 }
