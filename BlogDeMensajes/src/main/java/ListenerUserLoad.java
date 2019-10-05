@@ -1,7 +1,5 @@
 
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +36,12 @@ public class ListenerUserLoad implements ServletContextListener {
 		String pass1 = Encrypt.encryptWithMD5("martin123");
 		String pass2 = Encrypt.encryptWithMD5("admin123");
     	List<User> users = new ArrayList<User>();
+    	List<String> posts = new ArrayList<String>();
     	users.add(new User("martin.tribino", pass1, "user"));
     	users.add(new User("admin", pass2, "admin"));
     	ServletContext contexto = sce.getServletContext();
     	contexto.setAttribute("users", users);
+    	contexto.setAttribute("posts", posts);
     }
 	
 }

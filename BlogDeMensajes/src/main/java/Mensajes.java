@@ -10,19 +10,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Login
+ * Servlet implementation class Mensajes
  */
-@WebServlet("/Login")
-public class Login extends HttpServlet {
+@WebServlet("/Mensajes")
+public class Mensajes extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+       
     /**
-     * Default constructor. 
+     * @see HttpServlet#HttpServlet()
      */
-    public Login() {
+    public Mensajes() {
+        super();
         // TODO Auto-generated constructor stub
     }
 
@@ -31,21 +31,12 @@ public class Login extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServletContext sc = request.getServletContext();
-		List<User> users = (List<User>) sc.getAttribute("users");
+		List<String> posts = (List<String>) sc.getAttribute("posts");
 		ServletRequest req = ((ServletRequest) request);
-		String userName = req.getParameter("user");
-		String passStr = req.getParameter("pass");
-		String pass = Encrypt.encryptWithMD5(passStr);
-		String page = "Login.jsp";
-		for (User us : users) {
-	        if (us.getName().equals(userName) && us.getPass().equals(pass)) {
-	    		HttpSession session = request.getSession(true);
-	    		session.setAttribute("userSession", us);
-	        	page = "visualizarMensaje.jsp";
-	        	break;
-	        }
-	    }
-		response.sendRedirect(page);
+		String post = req.getParameter("post");
+		posts.add(post);
+		sc.setAttribute("posts", posts);
+		response.sendRedirect("visualizarMensaje.jsp");
 	}
 
 }
