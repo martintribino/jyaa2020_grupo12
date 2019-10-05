@@ -32,7 +32,7 @@ public class DatosPers extends HttpServlet {
         String names = request.getParameter("names");
         String surnames = request.getParameter("surnames");
         String dni = request.getParameter("dni");
-        String email = request.getParameter("dni");
+        String email = request.getParameter("email");
         HttpSession sesion = request.getSession();
         DatosCupon dc = (DatosCupon)sesion.getAttribute("dc");
         if (dc == null) {
