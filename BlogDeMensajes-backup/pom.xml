@@ -8,12 +8,6 @@
   <name>BlogDeMensajes Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
-    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-	<dependency>
-	    <groupId>mysql</groupId>
-	    <artifactId>mysql-connector-java</artifactId>
-	    <version>8.0.12</version>
-	</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
