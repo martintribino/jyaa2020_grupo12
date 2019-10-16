@@ -14,22 +14,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import clasesDAO.FactoryDAO;
-import clasesDAOImplJPA.UsuarioDAOJPA;
-import clasesDAOImplJdbc.UsuarioDAOJdbc;
-import clasesObjetosSistema.Encrypt;
+import clasesDAOImplJdbc.MensajeDAOJdbc;
+import clasesObjetosSistema.Mensaje;
 import clasesObjetosSistema.Usuario;
 
 /**
- * Servlet implementation class Login
+ * Servlet implementation class Mensajes
  */
-@WebServlet("/Login")
-public class Login extends HttpServlet {
+@WebServlet("/Mensajes")
+public class Mensajes extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+       
     /**
-     * Default constructor. 
+     * @see HttpServlet#HttpServlet()
      */
-    public Login() {
+    public Mensajes() {
+        super();
         // TODO Auto-generated constructor stub
     }
 
@@ -37,21 +37,16 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UsuarioDAOJPA usuariosJPA = FactoryDAO.getUsuarioDAOJPA();
-		List<Usuario> users = (List<Usuario>) usuariosJPA.cargar();
+		MensajeDAOJdbc mensajesJdbc = FactoryDAO.getMensajeDAO();
 		ServletRequest req = ((ServletRequest) request);
-		String userName = req.getParameter("user");
-		String pass = req.getParameter("pass");
-		String page = "Login.jsp";
-		for (Usuario us : users) {
-	        if (us.getNombreUsuario().equals(userName) && us.verificarClave(pass)) {
-	    		HttpSession session = request.getSession(true);
-	    		session.setAttribute("userSession", us);
-	        	page = "visualizarMensaje.jsp";
-	        	break;
-	        }
-	    }
-		response.sendRedirect(page);
+		String postStr = req.getParameter("post");
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			Usuario user = (Usuario) session.getAttribute("userSession");
+			Mensaje m = new Mensaje(user.getNombreUsuario(), postStr);
+			mensajesJdbc.guardar(m);
+		}
+		response.sendRedirect("agregarMensaje.jsp");
 	}
 
 }

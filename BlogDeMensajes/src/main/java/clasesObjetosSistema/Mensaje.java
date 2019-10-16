@@ -1,34 +1,40 @@
 package clasesObjetosSistema;
 
-public class Mensaje {
-	private static final long serialVersionUID = 1L;
+import javax.persistence.*;
 
-	private long id;
-	private String nombreUsuario;
+@Entity
+@Table(name = "mensajes")
+public class Mensaje {
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	private String mensaje;
+	@ManyToOne(optional = false)
+	@JoinColumn(name="nombre_usuario")
+	private Usuario usuario;
 
 	public Mensaje() {
 	}
 
-	public Mensaje(String nombreUsuario, String mensaje) {
-		this.setNombreUsuario(nombreUsuario);
+	public Mensaje(Usuario usuario, String mensaje) {
+		this.setUsuario(usuario);
 		this.setMensaje(mensaje);
 	}
 
-	public long getId() {
-		return id;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	public String getNombreUsuario() {
-		return nombreUsuario;
+		return this.usuario.getNombreUsuario();
 	}
 
 	public void setNombreUsuario(String nombreUsuario) {
-		this.nombreUsuario = nombreUsuario;
+		this.usuario.setNombreUsuario(nombreUsuario);
 	}
 
 	public String getMensaje() {

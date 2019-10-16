@@ -1,25 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>practica4.ttps</groupId>
-  <artifactId>BlogDeMensajes</artifactId>
+  <groupId>final.ttps</groupId>
+  <artifactId>TTPS2019_FINAL_TRIBINIO</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>BlogDeMensajes Maven Webapp</name>
+  <name>TTPS2019_FINAL_TRIBINIO Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
-    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-	<dependency>
-	    <groupId>mysql</groupId>
-	    <artifactId>mysql-connector-java</artifactId>
-	    <version>8.0.12</version>
-	</dependency>
-	<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
-	<dependency>
-    	<groupId>org.hibernate</groupId>
-    	<artifactId>hibernate-entitymanager</artifactId>
-    	<version>5.4.6.Final</version>
-	</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -28,7 +16,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>BlogDeMensajes</finalName>
+    <finalName>TTPS2019_FINAL_TRIBINIO</finalName>
     <pluginManagement>
 		<plugins>
 			<plugin>

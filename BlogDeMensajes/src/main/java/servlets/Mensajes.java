@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import clasesDAO.FactoryDAO;
+import clasesDAOImplJPA.MensajeDAOJPA;
 import clasesDAOImplJdbc.MensajeDAOJdbc;
 import clasesObjetosSistema.Mensaje;
 import clasesObjetosSistema.Usuario;
@@ -37,13 +38,13 @@ public class Mensajes extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		MensajeDAOJdbc mensajesJdbc = FactoryDAO.getMensajeDAO();
+		MensajeDAOJPA mensajesJdbc = FactoryDAO.getMensajeDAOJPA();
 		ServletRequest req = ((ServletRequest) request);
 		String postStr = req.getParameter("post");
 		HttpSession session = request.getSession(false);
 		if (session != null) {
 			Usuario user = (Usuario) session.getAttribute("userSession");
-			Mensaje m = new Mensaje(user.getNombreUsuario(), postStr);
+			Mensaje m = new Mensaje(user, postStr);
 			mensajesJdbc.guardar(m);
 		}
 		response.sendRedirect("agregarMensaje.jsp");

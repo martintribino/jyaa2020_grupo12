@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import clasesDAO.FactoryDAO;
-import clasesDAOImplJPA.UsuarioDAOJPA;
 import clasesDAOImplJdbc.UsuarioDAOJdbc;
 import clasesObjetosSistema.Encrypt;
 import clasesObjetosSistema.Usuario;
@@ -37,8 +36,8 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UsuarioDAOJPA usuariosJPA = FactoryDAO.getUsuarioDAOJPA();
-		List<Usuario> users = (List<Usuario>) usuariosJPA.cargar();
+		UsuarioDAOJdbc mensajesJdbc = FactoryDAO.getUsuarioDAO();
+		List<Usuario> users = (List<Usuario>) mensajesJdbc.cargar();
 		ServletRequest req = ((ServletRequest) request);
 		String userName = req.getParameter("user");
 		String pass = req.getParameter("pass");

@@ -9,7 +9,6 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import clasesDAO.FactoryDAO;
-import clasesDAOImplJPA.UsuarioDAOJPA;
 import clasesDAOImplJdbc.UsuarioDAOJdbc;
 import clasesObjetosSistema.Usuario;
 
@@ -38,7 +37,7 @@ public class UserLoad implements ServletContextListener {
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
     public void contextInitialized(ServletContextEvent sce)  {
-    	UsuarioDAOJPA usuario = FactoryDAO.getUsuarioDAOJPA();
+    	UsuarioDAOJdbc usuario = FactoryDAO.getUsuarioDAO();
     	Usuario u = new Usuario("admin", "Admin", "Admin", "admin123", "admin@admin.ad", "admin");
     	usuario.guardar(u);
     }

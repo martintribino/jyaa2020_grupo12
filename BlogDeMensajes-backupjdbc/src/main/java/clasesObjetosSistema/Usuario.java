@@ -1,26 +1,16 @@
 package clasesObjetosSistema;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "usuario")
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "nombre_usuario")
+
 	private String nombreUsuario;
 	private String nombre;
 	private String apellido;
 	private String email;
 	private String clave;
 	private String rol;
-	@OneToMany(mappedBy="usuario")
-	private List<Mensaje> mensajes;
 	
 	public Usuario() {
 	}

@@ -3,7 +3,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="clasesObjetosSistema.Mensaje" %>
 <%@ page import="clasesDAO.FactoryDAO" %>
-<%@ page import="clasesDAOImplJPA.MensajeDAOJPA" %>
+<%@ page import="clasesDAOImplJdbc.MensajeDAOJdbc" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,8 +24,8 @@
 </nav>
 <div class="messages">
   <% 
-	MensajeDAOJPA postsJPA = FactoryDAO.getMensajeDAOJPA();
-  	java.util.List<Mensaje> posts = postsJPA.cargar();
+	MensajeDAOJdbc postsJdbc = FactoryDAO.getMensajeDAO();
+  	java.util.List<Mensaje> posts = postsJdbc.cargar();
   	 for (Mensaje post : posts) {%>
 	  	<article>
 	  		<p><%=post.getNombreUsuario() %> - <strong><%=post.getMensaje()%></strong></p>
