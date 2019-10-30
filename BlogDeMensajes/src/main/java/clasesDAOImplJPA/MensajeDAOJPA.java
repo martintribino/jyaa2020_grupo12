@@ -13,7 +13,6 @@ import javax.persistence.Query;
 
 import clasesDAO.MensajeDAO;
 import clasesObjetosSistema.Mensaje;
-import clasesObjetosSistema.Usuario;
 
 public class MensajeDAOJPA implements MensajeDAO {
 	private EntityManagerFactory emf;

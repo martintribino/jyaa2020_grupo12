@@ -44,4 +44,9 @@ public class Mensaje {
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
 	}
+
+	public Object getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
