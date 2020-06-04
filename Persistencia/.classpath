@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="WebContent/WEB-INF/lib"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v9.0">
+		<attributes>
+			<attribute name="owner.project.facets" value="jst.web"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/aopalliance-repackaged-2.4.0-b10.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/asm-debug-all-5.0.2.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/c3p0-0.9.1.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/guava-27.0.1-android.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hibernate-c3p0-4.1.8.Final.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hibernate-commons-annotations-4.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hibernate-core-4.1.8.Final.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hibernate-entitymanager-4.1.8.Final.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hibernate-validator-4.1.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hk2-api-2.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hk2-locator-2.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/hk2-utils-2.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jackson-annotations-2.5.4.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jackson-core-2.5.4.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jackson-databind-2.5.4.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jackson-jaxrs-base-2.5.4.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jackson-jaxrs-json-provider-2.5.4.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jackson-module-jaxb-annotations-2.5.4.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/javassist-3.15.0-GA.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/javax.inject-2.4.0-b10.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/javax.ws.rs-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jaxb-api-2.2.7.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jboss-logging-3.1.0.GA.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jboss-transaction-api_1.1_spec-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-client.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-common.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-container-servlet.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-container-servlet-core.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-entity-filtering-2.17.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-guava-2.17.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-media-jaxb.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-media-json-jackson-2.17.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/jersey-server.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/mysql-connector-java-5.1.45.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/org.osgi.core-4.2.0.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/osgi-resource-locator-1.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/reflections-0.9.11.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/UNLP/JyAA2020/jars_hibernate_jersey_hk2/validation-api-1.1.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/.m2/repository/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar"/>
+	<classpathentry kind="lib" path="/home/mtribino/.m2/repository/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-11-openjdk-amd64">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
