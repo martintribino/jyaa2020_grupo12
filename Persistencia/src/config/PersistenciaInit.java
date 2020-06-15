@@ -18,6 +18,8 @@ import IDAO.IObraDAO;
 import IDAO.IUsuarioDAO;
 import modelo.Actividad;
 import modelo.Artista;
+import modelo.Coordinadas;
+import modelo.Direccion;
 import modelo.Edicion;
 import modelo.Espacio;
 import modelo.Etiqueta;
@@ -94,9 +96,13 @@ public class PersistenciaInit extends ResourceConfig {
 	
 	private void ABMEspacios(ServiceLocator locator, Boolean baja) {
 		//Espacio
+		Direccion dir1 = new Direccion("26 nro 128", "La Plata", "Buenos Aires", 1900,
+				new Coordinadas(120, 125));
+		Direccion dir2 = new Direccion("26 nro 120", "La Plata", "Buenos Aires", 1900,
+				new Coordinadas(120, 120));
 		IEspacioDAO espacioDAO = locator.getService(IEspacioDAO.class);
-		Espacio espacio1 = new Espacio("Espacio1", "Espacio 1 2020", 1500, Espacio.Estados.CERRADO);
-		Espacio espacio2 = new Espacio("Espacio2", "Espacio 2 2020", 1500, Espacio.Estados.ABIERTO);
+		Espacio espacio1 = new Espacio("Espacio1", "Espacio 1 2020", 1500, Espacio.Estados.CERRADO, dir1);
+		Espacio espacio2 = new Espacio("Espacio2", "Espacio 2 2020", 1500, Espacio.Estados.ABIERTO, dir2);
 		//Alta
 		espacioDAO.guardar(espacio1);
 		espacioDAO.guardar(espacio2);
@@ -174,7 +180,10 @@ public class PersistenciaInit extends ResourceConfig {
 		participante.addPermiso(Rol.Permisos.LECTURA_EDICIONES.toString());
 		participante.addPermiso(Rol.Permisos.LECTURA_ESPACIOS.toString());
 		IUsuarioDAO usuarioDAO = locator.getService(IUsuarioDAO.class);
-		Usuario usuario = new Usuario( "participante", "p123", "Nombre1", "Apellido1", 123, 123, "part@part.com", participante);
+		Direccion dir1 = new Direccion("26 nro 118", "La Plata", "Buenos Aires", 1900,
+				new Coordinadas(120, 115));
+		Usuario usuario = new Usuario( "participante", "p123", "Nombre1", "Apellido1", 123, 123,
+										"part@part.com", participante, dir1);
 		//Alta Usuario
 		usuarioDAO.guardar(usuario);
 		//Edicion usuario

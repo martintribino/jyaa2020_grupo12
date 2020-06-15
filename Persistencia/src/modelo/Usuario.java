@@ -72,6 +72,13 @@ public class Usuario implements Serializable {
 			orphanRemoval = true
 	)
 	private Rol rol;
+	@OneToOne(
+			optional = false,
+			fetch = FetchType.EAGER,
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
+			orphanRemoval = false
+	)
+    private Direccion direccion = new Direccion();
 	@OneToMany(
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
 			orphanRemoval = false
@@ -93,7 +100,7 @@ public class Usuario implements Serializable {
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-        name = "Usuario_Notificacion", 
+        name = "usuario_notificacion", 
         joinColumns = { @JoinColumn(name = "usuario_id") }, 
         inverseJoinColumns = { @JoinColumn(name = "notificacion_id") }
     )
@@ -110,7 +117,8 @@ public class Usuario implements Serializable {
 		this.setApellido("apellido");
 	}
 
-	public Usuario(String nombreUsuario, String clave, String nombre, String apellido, int dni, int telefono, String email, Rol rol) {
+	public Usuario(String nombreUsuario, String clave, String nombre, String apellido, int dni, int telefono,
+					String email, Rol rol) {
 		this.setNombreUsuario(nombreUsuario);
 		this.setClave(clave);
 		this.setNombre(nombre);
@@ -119,6 +127,19 @@ public class Usuario implements Serializable {
 		this.setEmail(email);
 		this.setDni(dni);
 		this.setTelefono(telefono);
+	}
+
+	public Usuario(String nombreUsuario, String clave, String nombre, String apellido, int dni, int telefono,
+					String email, Rol rol, Direccion direccion) {
+		this.setNombreUsuario(nombreUsuario);
+		this.setClave(clave);
+		this.setNombre(nombre);
+		this.setApellido(apellido);
+		this.setRol(rol);
+		this.setEmail(email);
+		this.setDni(dni);
+		this.setTelefono(telefono);
+		this.setDireccion(direccion);
 	}
 
 	public Long getId() {
@@ -231,6 +252,14 @@ public class Usuario implements Serializable {
 
 	public void setValoraciones(List<Valoracion> valoraciones) {
 		this.valoraciones = valoraciones;
+	}
+
+	public Direccion getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(Direccion direccion) {
+		this.direccion = direccion;
 	}
 
 }

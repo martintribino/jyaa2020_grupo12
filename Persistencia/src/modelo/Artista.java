@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,6 +45,10 @@ public class Artista implements Serializable {
 	@Basic
 	@JsonIgnore
 	@ElementCollection
+	@CollectionTable(
+        name = "artista_fotos",
+        joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
+    )
 	private Set<String> fotos = new HashSet<String>();
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinTable(

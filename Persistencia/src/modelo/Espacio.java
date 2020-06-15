@@ -6,19 +6,18 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
-
-import org.apache.tomcat.jni.Address;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -47,13 +46,17 @@ public class Espacio implements Serializable {
     @Size(max = 100, message = "descripcion debe tener como máximo 150 caracteres")
 	private String descripcion = "";
 	@Basic
-    @Embedded
-    private Address direccion = new Address();
-	@Basic
     @Min(value = 0, message = "Capacidad debe ser mayor que 0")
 	private int capacidad = 0;
 	@Basic
 	private Espacio.Estados condicion = Espacio.Estados.ABIERTO;
+	@OneToOne(
+			optional = false,
+			fetch = FetchType.EAGER,
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
+			orphanRemoval = false
+	)
+    private Direccion direccion = new Direccion();
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
     @JoinTable(
@@ -67,11 +70,13 @@ public class Espacio implements Serializable {
 		this.setNombre("nombre");
 	}
 
-	public Espacio(String nombre, String descripcion, int capacidad, Espacio.Estados condicion) {
+	public Espacio(String nombre, String descripcion, int capacidad, Espacio.Estados condicion,
+					Direccion direccion) {
 		this.setNombre(nombre);
 		this.setDescripcion(descripcion);
 		this.setCapacidad(capacidad);
 		this.setCondicion(condicion);
+		this.setDireccion(direccion);
 	}
 
 	public Long getId() {
@@ -122,11 +127,11 @@ public class Espacio implements Serializable {
 		this.etiquetas = etiquetas;
 	}
 
-	public Address getDireccion() {
+	public Direccion getDireccion() {
 		return direccion;
 	}
 
-	public void setDireccion(Address direccion) {
+	public void setDireccion(Direccion direccion) {
 		this.direccion = direccion;
 	}
 

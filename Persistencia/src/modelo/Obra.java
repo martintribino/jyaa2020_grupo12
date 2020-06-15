@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -56,6 +57,10 @@ public class Obra implements Serializable {
 	private Set<Artista> artistas = new HashSet<Artista>();
 	@JsonIgnore
 	@ElementCollection
+	@CollectionTable(
+        name = "obra_fotos",
+        joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
+    )
 	private Set<String> fotos = new HashSet<String>();
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })

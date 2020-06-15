@@ -9,12 +9,14 @@ import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -68,6 +70,10 @@ public class Edicion implements Serializable {
 	private List<Actividad> actividades = new ArrayList<Actividad>();
 	@JsonIgnore
 	@ElementCollection
+	@CollectionTable(
+        name = "edicion_fotos",
+        joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
+    )
 	private Set<String> fotos = new HashSet<String>();
 
 	public Edicion() {

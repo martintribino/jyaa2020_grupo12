@@ -6,9 +6,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "coordinadas")
+@Table(name = "coordinadas",uniqueConstraints={@UniqueConstraint(columnNames={"longitud", "latitud"})})
 public class Coordinadas {
 
 	/**
@@ -30,13 +31,13 @@ public class Coordinadas {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Coordinadas(double lon, double lat){
+		this.setLongitud(lon);
+	    this.setLatitud(lat);;
 	}
 
-	public Coordinadas(double lon, double lat){
-		this.longitud=lon;
-	    this.latitud=lat;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public double getLongitud() {

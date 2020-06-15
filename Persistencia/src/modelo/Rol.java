@@ -5,12 +5,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -49,6 +51,10 @@ public class Rol implements Serializable {
     @Size(max = 150, message = "descripcion debe tener como máximo 150 caracteres")
 	private String descripción = "";
     @ElementCollection
+	@CollectionTable(
+        name = "rol_permisos",
+        joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
+    )
     private Set<String> permisos = new HashSet<String>();
 
 	public Rol() {
@@ -90,6 +96,10 @@ public class Rol implements Serializable {
 
 	public Boolean addPermiso(String permiso) {
 		return this.permisos.add(permiso);
+	}
+
+	public Boolean addPermisos(Set<String> permisos) {
+		return this.permisos.addAll(permisos);
 	}
 
 	public Boolean removePermiso(String permiso) {
