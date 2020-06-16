@@ -3,19 +3,19 @@
 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="Persistencia" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<class>modelo.Actividad</class>
-		<class>modelo.Artista</class>
-		<class>modelo.Asistencia</class>
-		<class>modelo.Coordinadas</class>
-		<class>modelo.Direccion</class>
-		<class>modelo.Edicion</class>
-		<class>modelo.Espacio</class>
-		<class>modelo.Etiqueta</class>
-		<class>modelo.Notificacion</class>
-		<class>modelo.Obra</class>
-		<class>modelo.Rol</class>
-		<class>modelo.Usuario</class>
-		<class>modelo.Valoracion</class>
+		<class>com.modelo.Actividad</class>
+		<class>com.modelo.Artista</class>
+		<class>com.modelo.Asistencia</class>
+		<class>com.modelo.Coordinadas</class>
+		<class>com.modelo.Direccion</class>
+		<class>com.modelo.Edicion</class>
+		<class>com.modelo.Espacio</class>
+		<class>com.modelo.Etiqueta</class>
+		<class>com.modelo.Notificacion</class>
+		<class>com.modelo.Obra</class>
+		<class>com.modelo.Rol</class>
+		<class>com.modelo.Usuario</class>
+		<class>com.modelo.Valoracion</class>
 		<properties>
 			<property name="hibernate.id.new_generator_mappings" value="false" />
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
