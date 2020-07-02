@@ -19,5 +19,6 @@ public interface IGenericDAO<T> {
 	void eliminar(T entity);
 	T eliminar(Long id);
 	List<T> listar(String columnOrder, String order);
+	List<T> listar();
 	T encontrar(Long id);
 }

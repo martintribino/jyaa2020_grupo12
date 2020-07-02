@@ -14,9 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -36,60 +38,59 @@ public class Actividad implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
 	private String nombre;
 	@Basic
     @Size(max = 150, message = "apellido debe tener como máximo 150 caracteres")
-	private String descripcion;
+	private String descripcion = "";
 	@Basic
     @Column(name = "desde", nullable = false)
     @JsonSerialize(converter = LocalDateTimeToStringConverter.class)
     @JsonDeserialize(converter = StringToLocalDateTimeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = GenericHelper.LOCALDATETIME_FORMAT)
-	private LocalDateTime desde;
+	private LocalDateTime desde = LocalDateTime.now();
 	@Basic
     @Column(name = "hasta", nullable = false)
     @JsonSerialize(converter = LocalDateTimeToStringConverter.class)
     @JsonDeserialize(converter = StringToLocalDateTimeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = GenericHelper.LOCALDATETIME_FORMAT)
-	private LocalDateTime hasta;
+	private LocalDateTime hasta = LocalDateTime.now();
+	@Basic
+    @Min(value = 0, message = "Puntaje debe ser mayor o igual que 0")
+    @Column(name = "entradas_vendidas")
+	private int entradasVendidas = 0;
 	@OneToOne(
 			optional = true,
 			fetch = FetchType.EAGER,
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH},
 			orphanRemoval = false
 	)
-	private Obra obra;
+	private Obra obra = null;
 	@OneToOne(
 			optional = false,
 			fetch = FetchType.EAGER,
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
 			orphanRemoval = false
 	)
-	private Espacio espacio;
+	private Espacio espacio = new Espacio();
 	@ManyToOne(
 			optional = true
 	)
-	private Edicion edicion;
+	private Edicion edicion = null;
 
 	public Actividad() {
 		this.setNombre("nombre");
-		this.setDescripcion("");
-		this.setDesde(LocalDateTime.now());
-		this.setHasta(LocalDateTime.now());
-		this.setObra(null);
-		this.setEspacio(new Espacio());
 	}
 
-	public Actividad(String nombre, String descripcion, LocalDateTime desde, LocalDateTime hasta) {
+	public Actividad(String nombre, String descripcion, LocalDateTime desde, LocalDateTime hasta, Espacio espacio) {
 		this.setNombre(nombre);
 		this.setDescripcion(descripcion);
 		this.setDesde(LocalDateTime.now());
 		this.setHasta(LocalDateTime.now());
-		this.setObra(null);
-		this.setEspacio(new Espacio());
+		this.setEspacio(espacio);
 	}
 
 	public Long getId() {
@@ -154,6 +155,14 @@ public class Actividad implements Serializable {
 
 	public void setEdicion(Edicion edicion) {
 		this.edicion = edicion;
+	}
+
+	public int getEntradasVendidas() {
+		return entradasVendidas;
+	}
+
+	public void setEntradasVendidas(int entradasVendidas) {
+		this.entradasVendidas = entradasVendidas;
 	}
 
 }

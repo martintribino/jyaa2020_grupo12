@@ -4,12 +4,13 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "direccion")
@@ -17,6 +18,7 @@ public class Direccion {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
     @Basic
     private String calle = "";
@@ -29,9 +31,8 @@ public class Direccion {
     private Integer codigoPostal;
 	@OneToOne(
 			optional = true,
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
+			cascade = {CascadeType.ALL},
+			orphanRemoval = true
 	)
     Coordinadas coordinadas = null;
 

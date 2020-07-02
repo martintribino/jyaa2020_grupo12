@@ -11,4 +11,6 @@ public interface IEtiquetaDAO extends IGenericDAO<Etiqueta> {
 	 * Etiqueta DAO interface
 	 */
 
+	public Etiqueta etiquetaPorNombre(String nombre);
+
 }

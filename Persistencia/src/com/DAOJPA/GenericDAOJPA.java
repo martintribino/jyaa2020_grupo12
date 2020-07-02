@@ -46,46 +46,86 @@ public class GenericDAOJPA<T> implements Serializable, IGenericDAO<T> {
 	@Override
 	public T guardar(T entity) {
 		EntityTransaction transaction = this.getEntityManager().getTransaction();
-		transaction.begin();
-		this.getEntityManager().persist(entity);
-		transaction.commit();
-		return entity;
+		try
+		{
+			transaction.begin();
+			this.getEntityManager().persist(entity);
+			transaction.commit();
+			return entity;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
 
 	@Override
 	public T actualizar(T entity) {
 		EntityTransaction transaction = this.getEntityManager().getTransaction();
-		transaction.begin();
-		this.getEntityManager().merge(entity);
-		transaction.commit();
-		return entity;
+		try
+		{
+			transaction.begin();
+			this.getEntityManager().merge(entity);
+			transaction.commit();
+			return entity;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
 
 	@Override
 	public T encontrar(Long id) {
 		EntityTransaction transaction = this.getEntityManager().getTransaction();
-		transaction.begin();
-		T objReturn = (T) this.getEntityManager().find(this.entityClass, id);
-		transaction.commit();
-		return objReturn;
+		try
+		{
+			transaction.begin();
+			T objReturn = (T) this.getEntityManager().find(this.entityClass, id);
+			transaction.commit();
+			return objReturn;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
 
 	@Override
 	public T obtenerReferencia(Long id) {
 		EntityTransaction transaction = this.getEntityManager().getTransaction();
-		transaction.begin();
-		T objReturn = (T) this.getEntityManager().getReference(this.entityClass, id);
-		transaction.commit();
-		return objReturn;
+		try
+		{
+			transaction.begin();
+			T objReturn = (T) this.getEntityManager().getReference(this.entityClass, id);
+			transaction.commit();
+			return objReturn;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
 
 	@Override
 	public Boolean existe(T entity) {
 		EntityTransaction transaction = this.getEntityManager().getTransaction();
-		transaction.begin();
-		Boolean ret = this.getEntityManager().contains(entity);
-		transaction.commit();
-		return ret;
+		try
+		{
+			transaction.begin();
+			Boolean ret = this.getEntityManager().contains(entity);
+			transaction.commit();
+			return ret;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
 
 	@Override
@@ -96,35 +136,79 @@ public class GenericDAOJPA<T> implements Serializable, IGenericDAO<T> {
 	@Override
 	public void eliminar(T entity) {
 		EntityTransaction transaction = this.getEntityManager().getTransaction();
-		transaction.begin();
-		this.getEntityManager().remove(
-				this.getEntityManager().contains(entity) ? entity :
-						this.getEntityManager().merge(entity));
-		transaction.commit();
+		try
+		{
+			transaction.begin();
+			this.getEntityManager().remove(
+					this.getEntityManager().contains(entity) ? entity :
+							this.getEntityManager().merge(entity));
+			transaction.commit();
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
-	
+
 	public T eliminar(Long id) {
 		EntityTransaction transaction = this.getEntityManager().getTransaction();
-		transaction.begin();
-		 T entity = this.getEntityManager().find(this.entityClass, id);
-		 if (entity != null) {
-			 this.eliminar(entity);
-		 }
-		transaction.commit();
-		 return entity;
+		try
+		{
+			transaction.begin();
+			 T entity = this.getEntityManager().find(this.entityClass, id);
+			 if (entity != null) {
+				 this.eliminar(entity);
+			 }
+			transaction.commit();
+			return entity;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
 
 	@Override
 	public List<T> listar(String columnOrder, String order) {
 		EntityTransaction transaction = this.getEntityManager().getTransaction();
-		transaction.begin();
 		List<T> list = new ArrayList<T>();
-		String strQuery = String.format("SELECT m FROM %s m ORDER BY m.%s %s",
-				this.entityClass.getSimpleName(), columnOrder, order);
-		TypedQuery<T> q = this.getEntityManager().createQuery(strQuery, this.entityClass);
-		list = (List<T>) q.getResultList();
-		transaction.commit();
-		return list;
+		try
+		{
+			String strQuery = String.format("SELECT m FROM %s m ORDER BY m.%s %s",
+					this.entityClass.getSimpleName(), columnOrder, order);
+			transaction.begin();
+			TypedQuery<T> q = this.getEntityManager().createQuery(strQuery, this.entityClass);
+			list = (List<T>) q.getResultList();
+			transaction.commit();
+			return list;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
+	}
+
+	@Override
+	public List<T> listar() {
+		EntityTransaction transaction = this.getEntityManager().getTransaction();
+		List<T> list = new ArrayList<T>();
+		try
+		{
+			String strQuery = String.format("SELECT m FROM %s m ORDER BY m.id", this.entityClass.getSimpleName());
+			transaction.begin();
+			TypedQuery<T> q = this.getEntityManager().createQuery(strQuery, this.entityClass);
+			list = (List<T>) q.getResultList();
+			transaction.commit();
+			return list;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
 
 }

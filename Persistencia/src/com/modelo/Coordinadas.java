@@ -8,8 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-@Table(name = "coordinadas",uniqueConstraints={@UniqueConstraint(columnNames={"longitud", "latitud"})})
+@Table(name = "coordinadas",uniqueConstraints={@UniqueConstraint(name = "latitud_longitud", columnNames={"longitud", "latitud"})})
 public class Coordinadas {
 
 	/**
@@ -18,6 +20,7 @@ public class Coordinadas {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	Long id;
 	@Basic
 	private double longitud;

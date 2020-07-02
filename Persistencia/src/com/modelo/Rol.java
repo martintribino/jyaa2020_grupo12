@@ -5,16 +5,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.CollectionTable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "rol")
@@ -25,6 +27,10 @@ public class Rol implements Serializable {
 	 */
 
 	private static final long serialVersionUID = 8810171671349896834L;
+
+	public static enum Tipos {
+		ADMINISTRADOR, OPERADOR, PARTICIPANTE, VISITANTE,
+	};
 
 	public static enum Permisos {
 		ALTA_ACTIVIDADES, BAJA_ACTIVIDADES, EDICION_ACTIVIDADES, LECTURA_ACTIVIDADES,
@@ -42,28 +48,32 @@ public class Rol implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
-	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
 	@Column(name="nombre", unique=true, updatable= true)
 	private String nombre;
 	@Basic
     @Size(max = 150, message = "descripcion debe tener como máximo 150 caracteres")
 	private String descripción = "";
-    @ElementCollection
-	@CollectionTable(
-        name = "rol_permisos",
-        joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
-    )
-    private Set<String> permisos = new HashSet<String>();
+	@OneToMany(
+			mappedBy = "rol",
+			fetch = FetchType.LAZY,
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
+			orphanRemoval = false
+	)
+	@JsonIgnore
+	private Set<Usuario> usuarios = new HashSet<Usuario>();
+    private Rol.Tipos tipo = Rol.Tipos.VISITANTE;
 
 	public Rol() {
 		this.setNombre("nombre");
 	}
 
-	public Rol(String nombre, String descripción) {
+	public Rol(String nombre, String descripción, Rol.Tipos tipo) {
 		this.setNombre(nombre);
 		this.setDescripción(descripción);
+		this.setTipo(tipo);
 	}
 
 	public Long getId() {
@@ -90,20 +100,24 @@ public class Rol implements Serializable {
 		this.descripción = descripción;
 	}
 
-	public Boolean hasPermiso(String permiso) {
-		return this.permisos.contains(permiso);
+	public Set<Usuario> getUsuarios() {
+		return usuarios;
 	}
 
-	public Boolean addPermiso(String permiso) {
-		return this.permisos.add(permiso);
+	public void setUsuarios(Set<Usuario> usuarios) {
+		this.usuarios = usuarios;
 	}
 
-	public Boolean addPermisos(Set<String> permisos) {
-		return this.permisos.addAll(permisos);
+	public Rol.Tipos getTipo() {
+		return tipo;
 	}
 
-	public Boolean removePermiso(String permiso) {
-		return this.permisos.remove(permiso);
+	public void setTipo(Rol.Tipos tipo) {
+		this.tipo = tipo;
+	}
+
+	public Boolean esOperador() {
+		return this.tipo.equals(Rol.Tipos.OPERADOR);
 	}
 
 }

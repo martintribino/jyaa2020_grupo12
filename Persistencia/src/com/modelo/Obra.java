@@ -1,10 +1,7 @@
 package com.modelo;
 
 import java.io.Serializable;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -19,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -37,6 +33,7 @@ public class Obra implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
@@ -46,7 +43,7 @@ public class Obra implements Serializable {
 	private String descripcion = "";
 	@Basic
     @Column(name = "duracion", nullable = false)
-	private Duration duracion = Duration.ofMinutes(60);
+	private int duracion = 60;
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
     @JoinTable(
@@ -70,18 +67,12 @@ public class Obra implements Serializable {
         inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") }
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
-	@OneToMany(mappedBy="usuario",
-			cascade={CascadeType.ALL},
-			orphanRemoval = true
-	)
-	@JsonIgnore
-	private List<Valoracion> valoraciones = new ArrayList<Valoracion>();
 
 	public Obra() {
 		this.setNombre("nombre");
 	}
 
-	public Obra(String nombre, String descripcion, Duration duracion) {
+	public Obra(String nombre, String descripcion, int duracion) {
 		this.setNombre(nombre);
 		this.setDescripcion(descripcion);
 		this.setDuracion(duracion);
@@ -111,11 +102,11 @@ public class Obra implements Serializable {
 		this.descripcion = descripcion;
 	}
 
-	public Duration getDuracion() {
+	public int getDuracion() {
 		return duracion;
 	}
 
-	public void setDuracion(Duration duracion) {
+	public void setDuracion(int duracion) {
 		this.duracion = duracion;
 	}
 

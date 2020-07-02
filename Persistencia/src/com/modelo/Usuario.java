@@ -1,9 +1,7 @@
 package com.modelo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -17,15 +15,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
+//import org.hibernate.validator.constraints.Email;
+//import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -41,6 +41,7 @@ public class Usuario implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
 	@Column(name="nombre_usuario", unique=true, updatable= true)
     @Size(min = 4, max = 50, message = "nombre debe tener entre 4 y 50 caracteres")
@@ -65,38 +66,34 @@ public class Usuario implements Serializable {
 	private String email;
 	@Basic
 	private int telefono;
-	@OneToOne(
-			optional = false,
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
+	@ManyToOne(
+			fetch=FetchType.EAGER,
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}
 	)
-	private Rol rol;
-	@OneToOne(
-			optional = false,
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
+    private Rol rol = null;
+	@ManyToOne(
+			fetch=FetchType.EAGER,
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}
 	)
-    private Direccion direccion = new Direccion();
+    private Direccion direccion = null;
 	@OneToMany(
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
 			orphanRemoval = false
 	)
 	@JsonIgnore
-	private List<Artista> artistasFav = new ArrayList<Artista>();
+	private Set<Artista> artistasFav = new HashSet<Artista>();
 	@OneToMany(
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
 			orphanRemoval = false
 	)
 	@JsonIgnore
-	private List<Obra> obrasFav = new ArrayList<Obra>();
+	private Set<Obra> obrasFav = new HashSet<Obra>();
 	@OneToMany(
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
 			orphanRemoval = false
 	)
 	@JsonIgnore
-	private List<Etiqueta> etiquetasFav = new ArrayList<Etiqueta>();
+	private Set<Etiqueta> etiquetasFav = new HashSet<Etiqueta>();
 	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
@@ -105,16 +102,21 @@ public class Usuario implements Serializable {
         inverseJoinColumns = { @JoinColumn(name = "notificacion_id") }
     )
 	private Set<Notificacion> notificaciones = new HashSet<Notificacion>();
-	@OneToMany(mappedBy="usuario",
-			cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
-	)
-	@JsonIgnore
-	private List<Valoracion> valoraciones = new ArrayList<Valoracion>();
 
 	public Usuario() {
 		this.setNombre("nombre");
 		this.setApellido("apellido");
+	}
+
+	public Usuario(String nombreUsuario, String clave, String nombre, String apellido, int dni, int telefono,
+					String email) {
+		this.setNombreUsuario(nombreUsuario);
+		this.setClave(clave);
+		this.setNombre(nombre);
+		this.setApellido(apellido);
+		this.setEmail(email);
+		this.setDni(dni);
+		this.setTelefono(telefono);
 	}
 
 	public Usuario(String nombreUsuario, String clave, String nombre, String apellido, int dni, int telefono,
@@ -206,14 +208,6 @@ public class Usuario implements Serializable {
 		this.telefono = telefono;
 	}
 
-	public Rol getRol() {
-		return rol;
-	}
-
-	public void setRol(Rol rol) {
-		this.rol = rol;
-	}
-
 	public Set<Notificacion> getNotificaciones() {
 		return notificaciones;
 	}
@@ -222,36 +216,40 @@ public class Usuario implements Serializable {
 		this.notificaciones = notificaciones;
 	}
 
-	public List<Artista> getArtistasFav() {
+	public Set<Artista> getArtistasFav() {
 		return artistasFav;
 	}
 
-	public void setArtistasFav(List<Artista> artistasFav) {
+	public void setArtistasFav(Set<Artista> artistasFav) {
 		this.artistasFav = artistasFav;
 	}
 
-	public List<Obra> getObrasFav() {
+	public void addArtistaFav(Artista artista) {
+		this.getArtistasFav().add(artista);
+	}
+
+	public Set<Obra> getObrasFav() {
 		return obrasFav;
 	}
 
-	public void setObrasFav(List<Obra> obrasFav) {
+	public void setObrasFav(Set<Obra> obrasFav) {
 		this.obrasFav = obrasFav;
 	}
 
-	public List<Etiqueta> getEtiquetasFav() {
+	public void addObraFav(Obra obra) {
+		this.getObrasFav().add(obra);
+	}
+
+	public Set<Etiqueta> getEtiquetasFav() {
 		return etiquetasFav;
 	}
 
-	public void setEtiquetasFav(List<Etiqueta> etiquetasFav) {
+	public void setEtiquetasFav(Set<Etiqueta> etiquetasFav) {
 		this.etiquetasFav = etiquetasFav;
 	}
 
-	public List<Valoracion> getValoraciones() {
-		return valoraciones;
-	}
-
-	public void setValoraciones(List<Valoracion> valoraciones) {
-		this.valoraciones = valoraciones;
+	public void addEtiquetaFav(Etiqueta etiqueta) {
+		this.getEtiquetasFav().add(etiqueta);
 	}
 
 	public Direccion getDireccion() {
@@ -260,6 +258,14 @@ public class Usuario implements Serializable {
 
 	public void setDireccion(Direccion direccion) {
 		this.direccion = direccion;
+	}
+
+	public Rol getRol() {
+		return rol;
+	}
+
+	public void setRol(Rol rol) {
+		this.rol = rol;
 	}
 
 }

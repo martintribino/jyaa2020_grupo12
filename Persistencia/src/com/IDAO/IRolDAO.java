@@ -11,4 +11,7 @@ public interface IRolDAO extends IGenericDAO<Rol> {
 	 * Rol DAO interface
 	 */
 
+	public Rol encontrarPorNombre(String nombre);
+	public Rol encontrarPorTipo(Rol.Tipos tipo);
+
 }

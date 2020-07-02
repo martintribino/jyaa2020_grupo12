@@ -3,19 +3,23 @@ package com.modelo;
 import java.io.Serializable;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "valoracion")
+@Table(name = "valoracion",uniqueConstraints={@UniqueConstraint(name = "usuario_obra", columnNames={"usuario_id", "obra_id"})})
 public class Valoracion implements Serializable {
 
 	/**
@@ -26,22 +30,38 @@ public class Valoracion implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
 	@Basic
-    @Size(max = 150, message = "apellido debe tener como máximo 150 caracteres")
-	private String descripcion = "";
-	@Basic
-    @Min(value = 1, message = "Puntaje debe ser mayor que 0")
-    @Max(value = 100, message = "Puntaje no puede ser mayor que 100")
-	private int puntaje = 70;
-	@ManyToOne(optional = false)
+    @Min(value = 0, message = "Puntaje debe ser mayor o igual que 0")
+    @Max(value = 10, message = "Puntaje no puede ser mayor que 10")
+	private int puntaje = 7;
+	@OneToOne(
+			optional = false,
+			fetch = FetchType.EAGER,
+			cascade = {CascadeType.REFRESH},
+			orphanRemoval = true
+	)
+	@JsonIgnore
 	@JoinColumn(name="usuario_id", nullable = false)
 	private Usuario usuario = new Usuario();
-	@ManyToOne(optional = false)
+	@OneToOne(
+			optional = false,
+			fetch = FetchType.EAGER,
+			cascade = {CascadeType.REFRESH},
+			orphanRemoval = true
+	)
+	@JsonIgnore
 	@JoinColumn(name="obra_id", nullable = false)
 	private Obra obra = new Obra();
 
 	public Valoracion() {
+	}
+
+	public Valoracion(int puntaje, Usuario usuario, Obra obra) {
+		this.setPuntaje(puntaje);
+		this.setUsuario(usuario);
+		this.setObra(obra);
 	}
 
 	public Long getId() {
@@ -74,14 +94,6 @@ public class Valoracion implements Serializable {
 
 	public void setPuntaje(int puntaje) {
 		this.puntaje = puntaje;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
 	}
 
 }

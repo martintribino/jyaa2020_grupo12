@@ -1,7 +1,8 @@
 package com.modelo;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -41,6 +42,7 @@ public class Notificacion implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonIgnore
 	private Long id;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
@@ -52,16 +54,39 @@ public class Notificacion implements Serializable {
 	@OneToOne(
 			optional = true,
 			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH},
-			orphanRemoval = true
+			cascade = {CascadeType.REFRESH, CascadeType.MERGE},
+			orphanRemoval = false
 	)
+	@JsonIgnore
 	private Actividad actividad;
     @ManyToMany(mappedBy = "notificaciones")
 	@JsonIgnore
-	private List<Usuario> usuarios; 
+	private Set<Usuario> usuarios = new HashSet<Usuario>();
 
 	public Notificacion() {
 		this.setNombre("nombre");
+	}
+
+	public Notificacion(
+			String nombre,
+			Notificacion.Tipos tipo,
+			Notificacion.Estados estado
+		) {
+		this.setNombre(nombre);
+		this.setTipo(tipo);
+		this.setEstado(estado);
+	}
+
+	public Notificacion(
+			String nombre,
+			Notificacion.Tipos tipo,
+			Notificacion.Estados estado,
+			Actividad actividad
+		) {
+		this.setNombre(nombre);
+		this.setTipo(tipo);
+		this.setEstado(estado);
+		this.setActividad(actividad);
 	}
 
 	public Long getId() {
@@ -88,11 +113,11 @@ public class Notificacion implements Serializable {
 		this.actividad = actividad;
 	}
 
-	public List<Usuario> getUsuarios() {
+	public Set<Usuario> getUsuarios() {
 		return usuarios;
 	}
 
-	public void setUsuarios(List<Usuario> usuarios) {
+	public void setUsuarios(Set<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
 
