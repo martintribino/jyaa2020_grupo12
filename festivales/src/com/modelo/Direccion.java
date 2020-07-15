@@ -1,19 +1,21 @@
 package com.modelo;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "direccion")
+@Table(name = "direccion", uniqueConstraints={@UniqueConstraint(name = "latitud_longitud", columnNames={"longitud", "latitud"})})
 public class Direccion {
 
 	@Id
@@ -21,20 +23,23 @@ public class Direccion {
 	@JsonIgnore
 	private Long id;
     @Basic
+    @Size(max = 100, message = "nombre debe tener entre menos de 100 caracteres")
     private String calle = "";
     @Basic
+    @Size(max = 100, message = "ciudad debe tener entre menos de 100 caracteres")
     private String ciudad = "";
     @Basic
+    @Size(max = 100, message = "estado debe tener entre menos de 100 caracteres")
     private String estado = "";
     @Basic
 	@Column(name="cp")
+    @Min(value = 1, message = "cp debe ser mayor que 0")
+    @Max(value = 99999999, message = "cp no puede ser mayor a 99999999")
     private Integer codigoPostal;
-	@OneToOne(
-			optional = true,
-			cascade = {CascadeType.ALL},
-			orphanRemoval = true
-	)
-    Coordinadas coordinadas = null;
+	@Basic
+	private double longitud;
+	@Basic
+	private double latitud;
 
 	public Direccion() {
 	}
@@ -44,14 +49,17 @@ public class Direccion {
 		this.setCiudad(ciudad);
 		this.setEstado(estado);
 		this.setCodigoPostal(codigoPostal);
+		this.setLatitud(latitud);
+		this.setLongitud(longitud);
 	}
 
-	public Direccion(String calle, String ciudad, String estado, Integer codigoPostal, Coordinadas coord) {
+	public Direccion(String calle, String ciudad, String estado, Integer codigoPostal, double latitud, double longitud) {
 		this.setCalle(calle);
 		this.setCiudad(ciudad);
 		this.setEstado(estado);
 		this.setCodigoPostal(codigoPostal);
-		this.setCoordinadas(coord);
+		this.setLatitud(latitud);
+		this.setLongitud(longitud);
 	}
 
 	public Long getId() {
@@ -94,12 +102,20 @@ public class Direccion {
 		this.codigoPostal = codigoPostal;
 	}
 
-	public Coordinadas getCoordinadas() {
-		return coordinadas;
+	public double getLongitud() {
+		return longitud;
 	}
 
-	public void setCoordinadas(Coordinadas coordinadas) {
-		this.coordinadas = coordinadas;
+	public void setLongitud(double longitud) {
+		this.longitud = longitud;
+	}
+
+	public double getLatitud() {
+		return latitud;
+	}
+
+	public void setLatitud(double latitud) {
+		this.latitud = latitud;
 	}
 
 }

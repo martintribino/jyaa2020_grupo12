@@ -32,7 +32,7 @@ public class UsuarioController {
 	public Response listarUsuarios() {
 		List<Usuario> usuarios = udao.listar();
 		if (usuarios.isEmpty())
-			return Response.noContent().build(); 
+			return Response.ok().entity(usuarios).build(); 
 		else
 			return Response.ok().entity(usuarios).build();
 	}

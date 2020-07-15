@@ -137,10 +137,8 @@ public class PersistenciaInit /*extends ResourceConfig*/ {
 		}
 		catch (Exception e)
 		{}
-		Direccion dir1 = new Direccion("26 nro 118", "La Plata", "Buenos Aires", 1900,
-				new Coordinadas(120, 115));
-		Direccion dir2 = new Direccion("26 nro 008", "La Plata", "Buenos Aires", 1900,
-				new Coordinadas(100, 015));
+		Direccion dir1 = new Direccion("26 nro 118", "La Plata", "Buenos Aires", 1900, 120, 115);
+		Direccion dir2 = new Direccion("26 nro 008", "La Plata", "Buenos Aires", 1900, 100, 015);
 		Usuario usuario = new Usuario( "participante", "p123", "Nombre1", "Apellido1", 123, 123,
 				"part@part.com", participante, dir1);
 		Usuario admin = new Usuario( "admin", "admin123", "Admin", "Admin", 1234, 1234,
@@ -159,7 +157,7 @@ public class PersistenciaInit /*extends ResourceConfig*/ {
 	
 	private void ABMEdiciones(ServiceLocator locator, Boolean baja) {
 		//Ediciones
-		Direccion dir1 = new Direccion("calle 7", "La Plata", "Buenos Aires", 1900, new Coordinadas(111.11, 101.01));
+		Direccion dir1 = new Direccion("calle 7", "La Plata", "Buenos Aires", 1900, 111.11, 101.01);
 		Espacio esp1 = new Espacio("Anf100", "Anfiteatro Nro 100", 150, Espacio.Estados.CERRADO, dir1);
 		Actividad actividad1 = new Actividad("Actividad 1", "Actividad 1 - 2020", LocalDateTime.of(2020, 01, 02, 00, 00),
 												LocalDateTime.of(2020, 02, 02, 00, 00), esp1);
@@ -196,10 +194,8 @@ public class PersistenciaInit /*extends ResourceConfig*/ {
 	
 	private void ABMEspacios(ServiceLocator locator, Boolean baja) {
 		//Espacio
-		Direccion dir3 = new Direccion("26 nro 128", "La Plata", "Buenos Aires", 1900,
-				new Coordinadas(120, 125));
-		Direccion dir4 = new Direccion("26 nro 120", "La Plata", "Buenos Aires", 1900,
-				new Coordinadas(120, 120));
+		Direccion dir3 = new Direccion("26 nro 128", "La Plata", "Buenos Aires", 1900, 120, 125);
+		Direccion dir4 = new Direccion("26 nro 120", "La Plata", "Buenos Aires", 1900, 120, 120);
 		Espacio espacio1 = new Espacio("Espacio1", "Espacio 1 2020", 1500, Espacio.Estados.CERRADO, dir3);
 		Espacio espacio2 = new Espacio("Espacio2", "Espacio 2 2020", 1500, Espacio.Estados.ABIERTO, dir4);
 		//Alta
@@ -229,11 +225,11 @@ public class PersistenciaInit /*extends ResourceConfig*/ {
 		if (baja)
 			obraDAO.eliminar(obra1);
 	}
-	
+
 	private void ABMActividades(ServiceLocator locator, Boolean baja) {
-		Direccion dir2 = new Direccion("calle 7", "La Plata", "Buenos Aires", 1900, new Coordinadas(001.11, 101.01));
+		Direccion dir2 = new Direccion("calle 7", "La Plata", "Buenos Aires", 1900, 001.11, 101.01);
 		Espacio esp2 = new Espacio("Anf101", "Anfiteatro Nro 101", 130, Espacio.Estados.CERRADO, dir2);
-		Direccion dir3 = new Direccion("calle 7", "La Plata", "Buenos Aires", 1900, new Coordinadas(001.11, 100.11));
+		Direccion dir3 = new Direccion("calle 7", "La Plata", "Buenos Aires", 1900, 001.11, 100.11);
 		Espacio esp3 = new Espacio("Anf101", "Anfiteatro Nro 101", 130, Espacio.Estados.CERRADO, dir3);
 		//Actividades
 		Actividad actividad1 = new Actividad("Actividad 1", "Actividad 1 - 2020", LocalDateTime.of(2020, 01, 02, 00, 00),

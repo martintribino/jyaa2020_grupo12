@@ -48,6 +48,7 @@ public class Usuario implements Serializable {
 	private String nombreUsuario;
 	@Basic
     @Size(min = 4, max = 150, message = "clave debe tener entre 4 y 150 caracteres")
+	@JsonIgnore
 	private String clave;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")

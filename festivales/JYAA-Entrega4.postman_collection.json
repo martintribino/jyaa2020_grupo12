@@ -44,13 +44,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/",
+							"raw": "localhost:8080/festivales/api/actividades/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								""
@@ -94,13 +94,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/1",
+							"raw": "localhost:8080/festivales/api/actividades/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								"1"
@@ -133,7 +133,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nombre\": \"Actividad 44\",\n    \"descripcion\": \"Actividad 4 - 2020\",\n    \"desde\": \"2020-07-21T00:00\",\n    \"hasta\": \"2020-07-28T23:59\",\n    \"obra\": {\n        \"nombre\": \"Obra1\",\n        \"descripcion\": \"Obra 1\",\n        \"duracion\": 90\n    },\n    \"espacio\": {\n        \"nombre\": \"Anf101\",\n        \"descripcion\": \"Anfiteatro Nro 101\",\n        \"capacidad\": 130,\n        \"condicion\": \"CERRADO\",\n        \"direccion\": {\n            \"calle\": \"calle 7\",\n            \"ciudad\": \"La Plata\",\n            \"estado\": \"Buenos Aires\",\n            \"codigoPostal\": 1900,\n            \"coordinadas\": {\n                \"longitud\": 1.11,\n                \"latitud\": 100.11\n            }\n        }\n    },\n    \"edicion\": null\n}",
+							"raw": "{\n    \"nombre\": \"Actividad 44\",\n    \"descripcion\": \"Actividad 4 - 2020\",\n    \"desde\": \"2020-07-21T00:00\",\n    \"hasta\": \"2020-07-28T23:59\",\n    \"obra\": {\n        \"nombre\": \"Obra1\",\n        \"descripcion\": \"Obra 1\",\n        \"duracion\": 90\n    },\n    \"espacio\": {\n        \"nombre\": \"Anf101\",\n        \"descripcion\": \"Anfiteatro Nro 101\",\n        \"capacidad\": 130,\n        \"condicion\": \"CERRADO\",\n        \"direccion\": {\n            \"calle\": \"calle 7\",\n            \"ciudad\": \"La Plata\",\n            \"estado\": \"Buenos Aires\",\n            \"codigoPostal\": 1900,\n            \"longitud\": 1.11,\n            \"latitud\": 100.11\n        }\n    },\n    \"edicion\": null\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -141,13 +141,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/",
+							"raw": "localhost:8080/festivales/api/actividades/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								""
@@ -188,13 +188,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/1",
+							"raw": "localhost:8080/festivales/api/actividades/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								"1"
@@ -235,13 +235,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/1/",
+							"raw": "localhost:8080/festivales/api/actividades/1/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								"1",
@@ -289,13 +289,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/obras/1/meinteresa",
+							"raw": "localhost:8080/festivales/api/actividades/obras/1/meinteresa",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								"obras",
@@ -338,13 +338,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/obras/1/asistire",
+							"raw": "localhost:8080/festivales/api/actividades/obras/1/asistire",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								"obras",
@@ -387,13 +387,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/obras/1/validar/a200ee1c-41aa-4208-9a5b-7d54e7071129",
+							"raw": "localhost:8080/festivales/api/actividades/obras/1/validar/a200ee1c-41aa-4208-9a5b-7d54e7071129",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								"obras",
@@ -437,13 +437,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/obras/1/valorar/5",
+							"raw": "localhost:8080/festivales/api/actividades/obras/1/valorar/5",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								"obras",
@@ -487,13 +487,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/actividades/obras/1/entradasEntregadas/30",
+							"raw": "localhost:8080/festivales/api/actividades/obras/1/entradasEntregadas/30",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"actividades",
 								"obras",
@@ -546,13 +546,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/artistas/",
+							"raw": "localhost:8080/festivales/api/artistas/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"artistas",
 								""
@@ -596,13 +596,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/artistas/1",
+							"raw": "localhost:8080/festivales/api/artistas/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"artistas",
 								"1"
@@ -643,13 +643,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/artistas/",
+							"raw": "localhost:8080/festivales/api/artistas/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"artistas",
 								""
@@ -690,13 +690,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/artistas/1",
+							"raw": "localhost:8080/festivales/api/artistas/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"artistas",
 								"1"
@@ -737,13 +737,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/artistas/1",
+							"raw": "localhost:8080/festivales/api/artistas/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"artistas",
 								"1"
@@ -787,13 +787,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/artistas/1/meinteresa",
+							"raw": "localhost:8080/festivales/api/artistas/1/meinteresa",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"artistas",
 								"1",
@@ -841,13 +841,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/notificaciones/1",
+							"raw": "localhost:8080/festivales/api/notificaciones/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"notificaciones",
 								"1"
@@ -897,13 +897,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/usuarios",
+							"raw": "localhost:8080/festivales/api/usuarios",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"usuarios"
 							]
@@ -946,13 +946,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/usuarios/1",
+							"raw": "localhost:8080/festivales/api/usuarios/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"usuarios",
 								"1"
@@ -985,7 +985,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"nombreUsuario\": \"operador\",\n\t\"clave\": \"operador123\",\n\t\"nombre\": \"operador\",\n\t\"apellido\": \"operador\",\n\t\"dni\": 123434,\n\t\"email\": \"operador@visitante.com\",\n\t\"telefono\": 133234,\n\t\"rol\": {\n\t\t\"nombre\": \"Operador\",\n\t\t\"descripción\": \"Operador\"\n\t},\n\t\"direccion\": {\n\t\t\"calle\": \"16 nro 008\",\n\t\t\"ciudad\": \"La Plata\",\n\t\t\"estado\": \"Buenos Aires\",\n\t\t\"codigoPostal\": 1900,\n\t\t\"coordinadas\": {\n\t\t\t\"longitud\": 203.0,\n\t\t\t\"latitud\": 13.0\n\t\t}\n\t}\n}",
+							"raw": "{\n\t\"nombreUsuario\": \"operador\",\n\t\"clave\": \"operador123\",\n\t\"nombre\": \"operador\",\n\t\"apellido\": \"operador\",\n\t\"dni\": 123434,\n\t\"email\": \"operador@visitante.com\",\n\t\"telefono\": 133234,\n\t\"rol\": {\n\t\t\"nombre\": \"Operador\",\n\t\t\"descripción\": \"Operador\"\n\t},\n\t\"direccion\": {\n\t\t\"calle\": \"16 nro 008\",\n\t\t\"ciudad\": \"La Plata\",\n\t\t\"estado\": \"Buenos Aires\",\n\t\t\"codigoPostal\": 1900,\n\t\t\"longitud\": 203.0,\n\t\t\"latitud\": 13.0\n\t}\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -993,13 +993,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/usuarios",
+							"raw": "localhost:8080/festivales/api/usuarios",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"usuarios"
 							]
@@ -1039,13 +1039,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/usuarios/1",
+							"raw": "localhost:8080/festivales/api/usuarios/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"usuarios",
 								"1"
@@ -1086,13 +1086,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/usuarios/1",
+							"raw": "localhost:8080/festivales/api/usuarios/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"usuarios",
 								"1"
@@ -1142,13 +1142,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/etiquetas/",
+							"raw": "localhost:8080/festivales/api/etiquetas/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"etiquetas",
 								""
@@ -1192,13 +1192,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/etiquetas/1",
+							"raw": "localhost:8080/festivales/api/etiquetas/1",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"etiquetas",
 								"1"
@@ -1239,13 +1239,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/etiquetas/",
+							"raw": "localhost:8080/festivales/api/etiquetas/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"etiquetas",
 								""
@@ -1286,13 +1286,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/etiquetas/etiqueta1/",
+							"raw": "localhost:8080/festivales/api/etiquetas/etiqueta1/",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"etiquetas",
 								"etiqueta1",
@@ -1337,13 +1337,13 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:8080/Entrega4/api/etiquetas/etiqueta2/meinteresa",
+							"raw": "localhost:8080/festivales/api/etiquetas/etiqueta2/meinteresa",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"Entrega4",
+								"festivales",
 								"api",
 								"etiquetas",
 								"etiqueta2",

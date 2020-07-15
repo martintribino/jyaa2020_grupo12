@@ -54,8 +54,9 @@ public class Rol implements Serializable {
 	@Column(name="nombre", unique=true, updatable= true)
 	private String nombre;
 	@Basic
-    @Size(max = 150, message = "descripcion debe tener como máximo 150 caracteres")
-	private String descripción = "";
+    @Size(max = 150, message = "descripción debe tener como máximo 150 caracteres")
+	private String descripcion = "";
+
 	@OneToMany(
 			mappedBy = "rol",
 			fetch = FetchType.LAZY,
@@ -72,7 +73,7 @@ public class Rol implements Serializable {
 
 	public Rol(String nombre, String descripción, Rol.Tipos tipo) {
 		this.setNombre(nombre);
-		this.setDescripción(descripción);
+		this.setDescripcion(descripción);
 		this.setTipo(tipo);
 	}
 
@@ -92,12 +93,12 @@ public class Rol implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public String getDescripción() {
-		return descripción;
+	public String getDescripcion() {
+		return descripcion;
 	}
 
-	public void setDescripción(String descripción) {
-		this.descripción = descripción;
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
 	public Set<Usuario> getUsuarios() {
