@@ -23,7 +23,7 @@ import com.modelo.Artista;
 import com.modelo.Usuario;
 import com.security.JWToken;
 
-@Path("/artistas")
+@Path("/api/artistas")
 public class ArtistaController {
 
 	@Inject

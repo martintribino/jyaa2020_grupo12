@@ -24,7 +24,7 @@ import com.modelo.Usuario;
 import com.modelo.Valoracion;
 import com.security.JWToken;
 
-@Path("/actividades/obras")
+@Path("/api/actividades/obras")
 public class ObraController {
 
 	@Inject

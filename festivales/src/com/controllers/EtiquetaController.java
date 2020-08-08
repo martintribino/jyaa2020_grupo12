@@ -22,7 +22,7 @@ import com.modelo.Etiqueta;
 import com.modelo.Usuario;
 import com.security.JWToken;
 
-@Path("/etiquetas")
+@Path("/api/etiquetas")
 public class EtiquetaController {
 
 	@Inject

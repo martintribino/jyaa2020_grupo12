@@ -44,7 +44,7 @@ public class Actividad implements Serializable {
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
 	private String nombre;
 	@Basic
-    @Size(max = 150, message = "apellido debe tener como máximo 150 caracteres")
+    @Size(max = 150, message = "descripcion debe tener como máximo 150 caracteres")
 	private String descripcion = "";
 	@Basic
     @Column(name = "desde", nullable = false)
@@ -59,7 +59,7 @@ public class Actividad implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = GenericHelper.LOCALDATETIME_FORMAT)
 	private LocalDateTime hasta = LocalDateTime.now();
 	@Basic
-    @Min(value = 0, message = "Puntaje debe ser mayor o igual que 0")
+    @Min(value = 0, message = "Entradas debe ser mayor o igual que 0")
     @Column(name = "entradas_vendidas")
 	private int entradasVendidas = 0;
 	@OneToOne(
@@ -70,12 +70,12 @@ public class Actividad implements Serializable {
 	)
 	private Obra obra = null;
 	@OneToOne(
-			optional = false,
+			optional = true,
 			fetch = FetchType.EAGER,
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
 			orphanRemoval = false
 	)
-	private Espacio espacio = new Espacio();
+	private Espacio espacio = null;
 	@ManyToOne(
 			optional = true
 	)
@@ -83,6 +83,13 @@ public class Actividad implements Serializable {
 
 	public Actividad() {
 		this.setNombre("nombre");
+	}
+
+	public Actividad(String nombre, String descripcion, LocalDateTime desde, LocalDateTime hasta) {
+		this.setNombre(nombre);
+		this.setDescripcion(descripcion);
+		this.setDesde(LocalDateTime.now());
+		this.setHasta(LocalDateTime.now());
 	}
 
 	public Actividad(String nombre, String descripcion, LocalDateTime desde, LocalDateTime hasta, Espacio espacio) {

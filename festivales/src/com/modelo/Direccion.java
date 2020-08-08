@@ -44,16 +44,7 @@ public class Direccion {
 	public Direccion() {
 	}
 
-	public Direccion(String calle, String ciudad, String estado, Integer codigoPostal) {
-		this.setCalle(calle);
-		this.setCiudad(ciudad);
-		this.setEstado(estado);
-		this.setCodigoPostal(codigoPostal);
-		this.setLatitud(latitud);
-		this.setLongitud(longitud);
-	}
-
-	public Direccion(String calle, String ciudad, String estado, Integer codigoPostal, double latitud, double longitud) {
+	public Direccion(String calle, String ciudad, String estado, Integer codigoPostal, double longitud, double latitud) {
 		this.setCalle(calle);
 		this.setCiudad(ciudad);
 		this.setEstado(estado);

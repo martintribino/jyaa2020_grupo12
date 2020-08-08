@@ -15,15 +15,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import javax.ws.rs.HttpMethod;
 
+import com.dto.responses.DefaultResponse;
 import com.security.JWToken;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 
 /**
  * Servlet Filter implementation class JWTAuthFilter
  */
-@WebFilter(filterName = "jwt-auth-filter", urlPatterns = "/api/*")
+@WebFilter(filterName = "jwt-auth-filter", urlPatterns = "/rest/api/*")
 public class JWTAuthFilter implements Filter {
-
-	public static final String FRONT_URL = "http://localhost:4200";
 
 	/**
 	 * @see Filter#init(FilterConfig)
@@ -38,22 +40,45 @@ public class JWTAuthFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        res.setContentType("application/json");
-        //CORS implement. por ahora aqui
-        res.setHeader("Access-Control-Allow-Origin", JWTAuthFilter.FRONT_URL);
-        res.setHeader("Access-Control-Allow-Methods","OPTIONS,POST,GET,PUT,DELETE");
-        res.setHeader("Access-Control-Allow-Headers","x-requested-with, origin, content-type, accept, authorization");
-        res.setHeader("Access-Control-Allow-Credentials","true");
-        if (!HttpMethod.OPTIONS.matches(req.getMethod())) {
-            String token = JWToken.getToken(req);
-            //aun no
-            /*if (token == null) {
-                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                PrintWriter out = response.getWriter();
-    			out.print("Intento de acceso no autorizado.");
-                return;
-            }*/
+        if (HttpMethod.OPTIONS.matches(req.getMethod())) {
+            chain.doFilter(request, response);
+            return;
         }
+        String token = JWToken.getToken(req);
+        if (token == null) {
+            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            PrintWriter out = response.getWriter();
+            DefaultResponse defResp = new DefaultResponse(
+            		"Acceso no autorizado",
+            		HttpServletResponse.SC_FORBIDDEN,
+            		"No token"
+        		);
+			out.print(defResp.toJSON());
+            return;
+        }
+		try {
+			JWToken.validateToken(token);
+		} catch  (ExpiredJwtException exp) {
+            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            PrintWriter out = response.getWriter();
+            DefaultResponse defResp = new DefaultResponse(
+            		"Acceso denegado",
+            		HttpServletResponse.SC_FORBIDDEN,
+            		"Token expired: " + exp.getMessage()
+        		);
+			out.print(defResp.toJSON());
+            return;
+		} catch (JwtException e) {
+            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            PrintWriter out = response.getWriter();
+            DefaultResponse defResp = new DefaultResponse(
+            		"Acceso denegado",
+            		HttpServletResponse.SC_FORBIDDEN,
+            		"Error in token: " + e.getMessage()
+        		);
+			out.print(defResp.toJSON());
+            return;
+		}
 		chain.doFilter(request, response);
 	}
 

@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import com.IDAO.IActividadDAO;
 import com.modelo.Actividad;
 
-@Path("/actividades")
+@Path("/api/actividades")
 public class ActividadController {
 
 	@Inject

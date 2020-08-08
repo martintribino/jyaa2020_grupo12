@@ -12,13 +12,14 @@ import javax.xml.bind.DatatypeConverter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 
 public class JWToken {
 
-    public static final String TOKENKEY = "ttp5.tribm.head1878**";
+    public static final String TOKENKEY = "JyAA.tribm.hd17**";
     public final static String AUTHORIZATION_HEADER = "Authorization";
     public final static String AUTHORIZATION_PREFIX = "Bearer ";
 	private static final int EXPIRATION_LIMIT = 30;
@@ -34,6 +35,14 @@ public class JWToken {
         String token = request.getHeader(JWToken.AUTHORIZATION_HEADER);
         if(JWToken.hasText(token)) {
         	token = token.replace(JWToken.AUTHORIZATION_PREFIX, "");
+        }
+        return (JWToken.hasText(token)) ? token : null;
+    }
+
+	public static String getToken(String rawToken) {
+        String token = rawToken;
+        if(JWToken.hasText(rawToken)) {
+        	token = rawToken.replace(JWToken.AUTHORIZATION_PREFIX, "");
         }
         return (JWToken.hasText(token)) ? token : null;
     }
@@ -55,6 +64,18 @@ public class JWToken {
 		String token = jwtBuilder.compact();
 
 		return token;
+    }
+
+    public static String parseToken(String token) {
+        try {
+            Claims body = Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+            return body.getSubject();
+        } catch (JwtException e) {
+            return null;
+        }
     }
 
 	public static Claims validateToken(String token) {

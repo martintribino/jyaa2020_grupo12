@@ -28,6 +28,9 @@ import javax.validation.constraints.Size;
 //import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.security.Encrypt;
 
 @Entity
 @Table(name = "usuario")
@@ -48,7 +51,7 @@ public class Usuario implements Serializable {
 	private String nombreUsuario;
 	@Basic
     @Size(min = 4, max = 150, message = "clave debe tener entre 4 y 150 caracteres")
-	@JsonIgnore
+    @JsonProperty(access = Access.WRITE_ONLY)
 	private String clave;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
@@ -267,6 +270,14 @@ public class Usuario implements Serializable {
 
 	public void setRol(Rol rol) {
 		this.rol = rol;
+	}
+
+	public Boolean verificarClave(String clave) {
+		return Encrypt.matches(clave, this.getClave());
+	}
+	
+	public Boolean esAdministrador() {
+		return (this.getRol() != null && this.getRol().esAdministrador() );
 	}
 
 }

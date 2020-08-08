@@ -3,9 +3,11 @@ package com.controllers;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -18,8 +20,10 @@ import com.IDAO.IRolDAO;
 import com.IDAO.IUsuarioDAO;
 import com.modelo.Rol;
 import com.modelo.Usuario;
+import com.security.Encrypt;
+import com.security.JWToken;
 
-@Path("/usuarios")
+@Path("/api/usuarios")
 public class UsuarioController {
 
 	@Inject
@@ -38,10 +42,10 @@ public class UsuarioController {
 	}
 
 	@GET
-	@Path("{idUsuario}")
+	@Path("{userName}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listarUsuario(@PathParam("idUsuario") Long idUsuario) {
-		Usuario usuario = udao.encontrar(idUsuario);
+	public Response listarUsuario(@PathParam("userName") String userName) {
+		Usuario usuario = udao.encontrarPorNombre(userName);
 		if (usuario != null)
 			return Response.ok().entity(usuario).build();
 		else
@@ -58,8 +62,10 @@ public class UsuarioController {
 				Rol rol = roldao.encontrarPorTipo(usuario.getRol().getTipo());
 				if (rol == null)
 					rol = roldao.encontrarPorTipo(Rol.Tipos.VISITANTE);
+				String pass = Encrypt.encode(usuario.getClave());
 				usuario.setRol(rol);
-				udao.guardar(usuario);
+				usuario.setClave(pass);
+				udao.actualizar(usuario);
 				return Response.ok().entity(usuario).build();
 			} else {
 				return Response.status(Response.Status.CONFLICT).entity("El usuario ya existe").build();
@@ -73,16 +79,28 @@ public class UsuarioController {
 	}
 
 	@PUT
-	@Path("{idUsuario}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response editarUsuario(@PathParam("idUsuario") Long idUsuario, Usuario usuario) {
-		Usuario usu = udao.encontrar(idUsuario);
+	public Response editarUsuario(@HeaderParam(JWToken.AUTHORIZATION_HEADER) String rawToken, Usuario usuario) {
+		Usuario usu = udao.encontrarPorNombre(usuario.getNombreUsuario());
 		if (usu != null) {
 			try
 			{
-				if (usuario.getRol() == null)
+		        String token = JWToken.getToken(rawToken);
+		        String usrnmOwner = JWToken.parseToken(token);
+		        Usuario own = udao.encontrarPorNombre(usrnmOwner);
+		        if(own == null || (!own.esAdministrador() && own.getId() != usu.getId()))
+					return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene autorizacion.").build();
+				String pass = usu.getClave();
+				if(usuario.getClave() != null)
+					pass = Encrypt.encode(usuario.getClave());
+				usuario.setClave(pass);
+				if (usuario.getRol() == null || usuario.getRol().getTipo() == null)
 					usuario.setRol(usu.getRol());
+				else {
+					Rol rol = roldao.encontrarPorTipo(usuario.getRol().getTipo());
+					usuario.setRol(rol);
+				}
 				if (usuario.getDireccion() == null)
 					usuario.setDireccion(usu.getDireccion());
 				usuario.setId(usu.getId());
@@ -91,7 +109,8 @@ public class UsuarioController {
 			}
 			catch(Exception ex)
 			{
-				System.out.println(ex);
+				//throw ex;
+				//System.out.println(ex);
 				return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar el usuario").build();
 			}
 		} else {
@@ -100,10 +119,10 @@ public class UsuarioController {
 	}
 
 	@DELETE
-	@Path("{idUsuario}")
+	@Path("{userName}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminarUsuario(@PathParam("idUsuario") Long idUsuario) {
-		Usuario usu = udao.encontrar(idUsuario);
+	public Response eliminarUsuario(@PathParam("userName") String userName) {
+		Usuario usu = udao.encontrarPorNombre(userName);
 		if (usu != null) {
 			try
 			{

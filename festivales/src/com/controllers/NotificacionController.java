@@ -20,7 +20,7 @@ import com.modelo.Notificacion;
 import com.modelo.Usuario;
 import com.security.JWToken;
 
-@Path("/notificaciones")
+@Path("/api/notificaciones")
 public class NotificacionController {
 
 	@Inject

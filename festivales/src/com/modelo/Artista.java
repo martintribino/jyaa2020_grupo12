@@ -51,6 +51,7 @@ public class Artista implements Serializable {
         joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
     )
 	private Set<String> fotos = new HashSet<String>();
+	@JsonIgnore
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     @JoinTable(
         name = "artista_etiqueta", 
@@ -58,6 +59,7 @@ public class Artista implements Serializable {
         inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") }
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+	@JsonIgnore
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
     Set<Obra> obras = new HashSet<Obra>();
 

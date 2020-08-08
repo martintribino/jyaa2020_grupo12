@@ -6,7 +6,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/x
 		<class>com.modelo.Actividad</class>
 		<class>com.modelo.Artista</class>
 		<class>com.modelo.Asistencia</class>
-		<class>com.modelo.Coordinadas</class>
 		<class>com.modelo.Direccion</class>
 		<class>com.modelo.Edicion</class>
 		<class>com.modelo.Espacio</class>
@@ -17,13 +16,13 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/x
 		<class>com.modelo.Usuario</class>
 		<class>com.modelo.Valoracion</class>
 		<properties>
-			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
 			<property name="hibernate.id.new_generator_mappings" value="false" />
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
 			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/sg-txilp"/>
 			<property name="hibernate.connection.username" value="mtribino" />
 			<property name="hibernate.connection.password" value="head18"/>
-			<property name="hibernate.hbm2ddl.auto" value="create"/>
+			<property name="hibernate.hbm2ddl.auto" value="update"/>
 			<property name="hibernate.show_sql" value="true"/>
         	<property name="hibernate.format_sql" value="false"/>
 		</properties>

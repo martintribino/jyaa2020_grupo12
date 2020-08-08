@@ -24,7 +24,6 @@ import com.IDAO.IRolDAO;
 import com.IDAO.IUsuarioDAO;
 import com.modelo.Actividad;
 import com.modelo.Artista;
-import com.modelo.Coordinadas;
 import com.modelo.Direccion;
 import com.modelo.Edicion;
 import com.modelo.Espacio;
@@ -96,16 +95,16 @@ public class PersistenciaInit /*extends ResourceConfig*/ {
 		{
 			//Roles
 			//Administrador
-			Rol administrador = new Rol("Administrador", "Administrador", Rol.Tipos.ADMINISTRADOR);
+			Rol administrador = new Rol("Administrador", Rol.Tipos.ADMINISTRADOR);
 			rolDAO.guardar(administrador);
 			//Operador
-			Rol operador = new Rol("Operador", "Operador", Rol.Tipos.OPERADOR);
+			Rol operador = new Rol("Operador", Rol.Tipos.OPERADOR);
 			rolDAO.guardar(operador);
 			//Participante
-			Rol participante = new Rol("Participante", "Participante", Rol.Tipos.PARTICIPANTE);
+			Rol participante = new Rol("Participante", Rol.Tipos.PARTICIPANTE);
 			rolDAO.guardar(participante);
 			//Visitante
-			Rol visitante = new Rol("Visitante", "Visitante", Rol.Tipos.VISITANTE);
+			Rol visitante = new Rol("Visitante", Rol.Tipos.VISITANTE);
 			rolDAO.guardar(visitante);
 		}
 		catch (Exception e)
@@ -117,9 +116,9 @@ public class PersistenciaInit /*extends ResourceConfig*/ {
 	private void ABMUsuarios(ServiceLocator locator, Boolean baja) {
 		//Roles
 		//Administrador
-		Rol administrador = new Rol("Administrador", "Administrador", Rol.Tipos.ADMINISTRADOR);
+		Rol administrador = new Rol("Administrador", Rol.Tipos.ADMINISTRADOR);
 		//Operador
-		Rol operador = new Rol("Operador", "Operador", Rol.Tipos.OPERADOR);
+		Rol operador = new Rol("Operador", Rol.Tipos.OPERADOR);
 		try
 		{
 			rolDAO.guardar(operador);
@@ -127,10 +126,10 @@ public class PersistenciaInit /*extends ResourceConfig*/ {
 		catch (Exception e)
 		{}
 		//Participante
-		Rol participante = new Rol("Participante", "Participante", Rol.Tipos.PARTICIPANTE);
+		Rol participante = new Rol("Participante", Rol.Tipos.PARTICIPANTE);
 		//rolDAO.guardar(participante);
 		//Visitante
-		Rol visitante = new Rol("Visitante", "Visitante", Rol.Tipos.VISITANTE);
+		Rol visitante = new Rol("Visitante", Rol.Tipos.VISITANTE);
 		try
 		{
 			rolDAO.guardar(visitante);
