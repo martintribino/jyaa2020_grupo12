@@ -27,7 +27,7 @@ public class GenericDAOJPA<T> implements Serializable, IGenericDAO<T> {
 	private EntityManager entityManager;
 	@Inject 
 	private EMFactory emFactory;
-	private Class<T> entityClass;
+	protected Class<T> entityClass;
 	
 	public GenericDAOJPA(Class<T> clase) {
 		this.entityClass = clase;

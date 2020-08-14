@@ -35,10 +35,7 @@ public class ArtistaController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarArtistas() {
 		List<Artista> artistas = artistaDAO.listar();
-		if (artistas.isEmpty())
-			return Response.noContent().build();
-		else
-			return Response.ok().entity(artistas).build();
+		return Response.ok().entity(artistas).build();
 	}
 
 	@GET
@@ -104,15 +101,13 @@ public class ArtistaController {
 	}
 
 	@PUT
-	@Path("{idArtista}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response editarArtista(@PathParam("idArtista") Long idArtista, Artista artista) {
+	public Response editarArtista(Artista artista) {
 		try
 		{
-			Artista art = artistaDAO.encontrar(idArtista);
+			Artista art = artistaDAO.encontrar(artista.getId());
 			if (art != null) {
-				artista.setId(art.getId());
 				artistaDAO.actualizar(artista);
 				return Response.ok().entity(artista).build();
 			} else {

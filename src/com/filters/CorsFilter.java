@@ -40,8 +40,8 @@ public class CorsFilter implements Filter {
         res.setContentType("application/json");
         //CORS implement. por ahora aqui
         res.setHeader("Access-Control-Allow-Origin", CorsFilter.FRONT_URL);
-        res.setHeader("Access-Control-Allow-Methods","OPTIONS,POST,GET,PUT,DELETE");
-        res.setHeader("Access-Control-Allow-Headers","x-requested-with, origin, content-type, accept, authorization");
+        res.setHeader("Access-Control-Allow-Methods","OPTIONS,POST,HEAD,GET,PUT,DELETE");
+        res.setHeader("Access-Control-Allow-Headers","Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
         res.setHeader("Access-Control-Allow-Credentials","true");
 		chain.doFilter(request, res);
 	}
