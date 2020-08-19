@@ -44,7 +44,6 @@ public class Usuario implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private Long id;
 	@Column(name="nombre_usuario", unique=true, updatable= true)
     @Size(min = 4, max = 50, message = "nombre debe tener entre 4 y 50 caracteres")

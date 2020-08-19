@@ -1,9 +1,14 @@
 package com.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
+import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
 
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -14,13 +19,25 @@ import com.modelo.Direccion;
 import com.modelo.Rol;
 import com.modelo.Usuario;
 import com.security.Encrypt;
+import com.services.IStorage;
 
 @ApplicationPath("/rest/*")
 @Singleton
 public class AppRest extends Application {
 
+	@Context
+	ServletContext servletContext;
+
 	public AppRest() {
 		System.out.println("init api rest");
+	}
+	
+	@Override
+	public Map<String, Object> getProperties() {
+	    Map<String, Object> props = new HashMap<>();
+	    props.put("jersey.config.server.provider.classnames", 
+	            "org.glassfish.jersey.media.multipart.MultiPartFeature");
+	    return props;
 	}
 
 	@PostConstruct
@@ -31,6 +48,9 @@ public class AppRest extends Application {
 		ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
 		try
 		{
+			//Storage
+			IStorage storage = locator.getService(IStorage.class);
+			storage.init(servletContext);
 			//Roles
 			IRolDAO rolDAO = locator.getService(IRolDAO.class);
 			//usuarios
@@ -55,6 +75,7 @@ public class AppRest extends Application {
 		}
 		catch (Exception e)
 		{
+			System.out.println(e);
 			System.out.println("Error creating roles.");
 		}
 	}

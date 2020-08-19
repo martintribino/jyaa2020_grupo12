@@ -18,7 +18,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -38,7 +37,6 @@ public class Actividad implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private Long id;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
@@ -77,7 +75,7 @@ public class Actividad implements Serializable {
 	)
 	private Espacio espacio = null;
 	@ManyToOne(
-			optional = true
+			optional = false
 	)
 	private Edicion edicion = null;
 
@@ -88,15 +86,15 @@ public class Actividad implements Serializable {
 	public Actividad(String nombre, String descripcion, LocalDateTime desde, LocalDateTime hasta) {
 		this.setNombre(nombre);
 		this.setDescripcion(descripcion);
-		this.setDesde(LocalDateTime.now());
-		this.setHasta(LocalDateTime.now());
+		this.setDesde(desde);
+		this.setHasta(hasta);
 	}
 
 	public Actividad(String nombre, String descripcion, LocalDateTime desde, LocalDateTime hasta, Espacio espacio) {
 		this.setNombre(nombre);
 		this.setDescripcion(descripcion);
-		this.setDesde(LocalDateTime.now());
-		this.setHasta(LocalDateTime.now());
+		this.setDesde(desde);
+		this.setHasta(hasta);
 		this.setEspacio(espacio);
 	}
 

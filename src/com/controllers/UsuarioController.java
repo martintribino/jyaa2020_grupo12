@@ -41,10 +41,10 @@ public class UsuarioController {
 	}
 
 	@GET
-	@Path("{userName}")
+	@Path("{user_name}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listarUsuario(@PathParam("userName") String userName) {
-		Usuario usuario = udao.encontrarPorNombre(userName);
+	public Response listarUsuario(@PathParam("user_name") String user_name) {
+		Usuario usuario = udao.encontrarPorNombre(user_name);
 		if (usuario != null)
 			return Response.ok().entity(usuario).build();
 		else
@@ -81,7 +81,7 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response editarUsuario(@HeaderParam(JWToken.AUTHORIZATION_HEADER) String rawToken, Usuario usuario) {
-		Usuario usu = udao.encontrarPorNombre(usuario.getNombreUsuario());
+		Usuario usu = udao.encontrar(usuario.getId());
 		if (usu != null) {
 			try
 			{
@@ -108,9 +108,9 @@ public class UsuarioController {
 			}
 			catch(Exception ex)
 			{
-				//throw ex;
+				throw ex;
 				//System.out.println(ex);
-				return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar el usuario").build();
+				//return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar el usuario").build();
 			}
 		} else {
 			return Response.status(Response.Status.NOT_FOUND).entity("El usuario no existe").build();
@@ -118,10 +118,10 @@ public class UsuarioController {
 	}
 
 	@DELETE
-	@Path("{userName}")
+	@Path("{idUsuario}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminarUsuario(@PathParam("userName") String userName) {
-		Usuario usu = udao.encontrarPorNombre(userName);
+	public Response eliminarUsuario(@PathParam("idUsuario") Long idUsuario) {
+		Usuario usu = udao.encontrar(idUsuario);
 		if (usu != null) {
 			try
 			{

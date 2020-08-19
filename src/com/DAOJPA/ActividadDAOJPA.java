@@ -32,7 +32,7 @@ public class ActividadDAOJPA extends GenericDAOJPA<Actividad> implements IActivi
 		{
 			transaction.begin();
 			TypedQuery<Actividad> consulta = this.getEntityManager()
-					.createQuery("SELECT a FROM Actividad a WHERE ((NOT (a.desde > :afin) and NOT (:ainicio > a.hasta)) and a.espacio != null and a.espacio.id <> :aespacio)", Actividad.class);
+					.createQuery("SELECT a FROM Actividad a WHERE ((NOT (a.desde > :afin) and NOT (:ainicio > a.hasta)) and (a.espacio != null and a.espacio.id <> :aespacio))", Actividad.class);
 			consulta.setParameter("ainicio", actividad.getDesde());
 			consulta.setParameter("afin", actividad.getHasta());
 			consulta.setParameter("aespacio", actividad.getEspacio().getId());

@@ -42,8 +42,6 @@ public class Artista implements Serializable {
 	@Basic
     @Size(min = 2, max = 50, message = "apodo debe tener entre 2 y 50 caracteres")
 	private String apodo;
-	@Basic
-	@JsonIgnore
 	@ElementCollection
 	@CollectionTable(
         name = "artista_fotos",
@@ -112,6 +110,15 @@ public class Artista implements Serializable {
 
 	public void setFotos(Set<String> fotos) {
 		this.fotos = fotos;
+	}
+
+	public void addFoto(String foto) {
+		this.fotos.add(foto);
+	}
+
+	public void removeFoto(String foto) {
+		if(this.fotos.contains(foto))
+			this.fotos.remove(foto);
 	}
 
 	public Set<Etiqueta> getEtiquetas() {
