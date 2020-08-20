@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet Filter implementation class CorsFilter
  */
-@WebFilter(filterName = "cors-filter", urlPatterns = "/rest/*")
-public class CorsFilter implements Filter {
+//@WebFilter(filterName = "cors-filter", urlPatterns = "/rest/*")
+public class CorsFilter /*implements Filter*/ {
 
 	public static final String FRONT_URL = "http://localhost:4200";
 

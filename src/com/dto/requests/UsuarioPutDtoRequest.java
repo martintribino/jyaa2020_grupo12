@@ -1,11 +1,10 @@
 package com.dto.requests;
 
 import javax.persistence.Basic;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.Email;
 
 import com.modelo.Rol;
 
@@ -28,7 +27,7 @@ public class UsuarioPutDtoRequest {
 	private int dni;
 	@Basic
     @Email(message = "El mail debe ser válido")
-	@NotBlank(message = "Por favor proporcione un email")
+    @Size(min = 3, max = 255, message = "email debe tener entre 3 y 255 caracteres")
 	private String email;
 	@Basic
 	private int telefono;

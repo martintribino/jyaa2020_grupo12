@@ -7,7 +7,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+
 import com.IDAO.IUsuarioDAO;
+import com.config.PersistenciaBinder;
 import com.dto.requests.UsuarioDtoRequest;
 import com.dto.responses.UsuarioDtoResponse;
 import com.modelo.Usuario;
@@ -16,8 +20,8 @@ import com.security.JWToken;
 @Path("/")
 public class AuthController {
 
-	@Inject
-	private IUsuarioDAO udao;
+	//@Inject
+	//private IUsuarioDAO udao;
 
 	@POST
 	@Path("/login")
@@ -25,6 +29,11 @@ public class AuthController {
 	public Response login(UsuarioDtoRequest usuario) {
 		try
 		{
+			ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+			ServiceLocatorUtilities.enablePerThreadScope(locator);
+			ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
+			//usuarios
+			IUsuarioDAO udao = locator.getService(IUsuarioDAO.class);
 			Usuario usu = udao.encontrarPorNombre(usuario.getNombreUsuario());
 			if (usu != null) {
 		        if (usu.verificarClave(usuario.getClave())) {

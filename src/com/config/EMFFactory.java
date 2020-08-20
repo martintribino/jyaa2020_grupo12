@@ -1,5 +1,6 @@
 package com.config;
 
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 

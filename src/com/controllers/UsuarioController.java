@@ -15,8 +15,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+
 import com.IDAO.IRolDAO;
 import com.IDAO.IUsuarioDAO;
+import com.config.PersistenciaBinder;
 import com.modelo.Rol;
 import com.modelo.Usuario;
 import com.security.Encrypt;
@@ -25,14 +29,19 @@ import com.security.JWToken;
 @Path("/api/usuarios")
 public class UsuarioController {
 
-	@Inject
-	private IUsuarioDAO udao;
-	@Inject
-	private IRolDAO roldao;
+	//@Inject
+	//private IUsuarioDAO udao;
+	//@Inject
+	//private IRolDAO roldao;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarUsuarios() {
+		ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+		ServiceLocatorUtilities.enablePerThreadScope(locator);
+		ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
+		//usuarios
+		IUsuarioDAO udao = locator.getService(IUsuarioDAO.class);
 		List<Usuario> usuarios = udao.listar();
 		if (usuarios.isEmpty())
 			return Response.ok().entity(usuarios).build(); 
@@ -44,6 +53,11 @@ public class UsuarioController {
 	@Path("{userName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarUsuario(@PathParam("userName") String userName) {
+		ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+		ServiceLocatorUtilities.enablePerThreadScope(locator);
+		ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
+		//usuarios
+		IUsuarioDAO udao = locator.getService(IUsuarioDAO.class);
 		Usuario usuario = udao.encontrarPorNombre(userName);
 		if (usuario != null)
 			return Response.ok().entity(usuario).build();
@@ -55,6 +69,12 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response crearUsuario(Usuario usuario) {
+		ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+		ServiceLocatorUtilities.enablePerThreadScope(locator);
+		ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
+		//usuarios
+		IUsuarioDAO udao = locator.getService(IUsuarioDAO.class);
+		IRolDAO roldao = locator.getService(IRolDAO.class);
 		try
 		{
 			if (!udao.existe(usuario)) {
@@ -81,6 +101,12 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response editarUsuario(@HeaderParam(JWToken.AUTHORIZATION_HEADER) String rawToken, Usuario usuario) {
+		ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+		ServiceLocatorUtilities.enablePerThreadScope(locator);
+		ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
+		//usuarios
+		IUsuarioDAO udao = locator.getService(IUsuarioDAO.class);
+		IRolDAO roldao = locator.getService(IRolDAO.class);
 		Usuario usu = udao.encontrarPorNombre(usuario.getNombreUsuario());
 		if (usu != null) {
 			try
@@ -121,6 +147,11 @@ public class UsuarioController {
 	@Path("{userName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response eliminarUsuario(@PathParam("userName") String userName) {
+		ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+		ServiceLocatorUtilities.enablePerThreadScope(locator);
+		ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
+		//usuarios
+		IUsuarioDAO udao = locator.getService(IUsuarioDAO.class);
 		Usuario usu = udao.encontrarPorNombre(userName);
 		if (usu != null) {
 			try

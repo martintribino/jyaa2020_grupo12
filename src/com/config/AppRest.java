@@ -20,17 +20,18 @@ import com.security.Encrypt;
 public class AppRest extends Application {
 
 	public AppRest() {
+		super();
 		System.out.println("init api rest");
 	}
 
 	@PostConstruct
 	public void init() {
-		System.out.println("creating roles ...");
-		ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
-		ServiceLocatorUtilities.enablePerThreadScope(locator);
-		ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
 		try
 		{
+			System.out.println("creating roles ...");
+			ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+			ServiceLocatorUtilities.enablePerThreadScope(locator);
+			ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
 			//Roles
 			IRolDAO rolDAO = locator.getService(IRolDAO.class);
 			//usuarios
@@ -55,6 +56,7 @@ public class AppRest extends Application {
 		}
 		catch (Exception e)
 		{
+			System.out.println(e);
 			System.out.println("Error creating roles.");
 		}
 	}

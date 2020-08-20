@@ -17,13 +17,13 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/x
 		<class>com.modelo.Usuario</class>
 		<class>com.modelo.Valoracion</class>
 		<properties>
-			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
 			<property name="hibernate.id.new_generator_mappings" value="false" />
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/jyaa2020_grupo12"/>
-			<property name="hibernate.connection.username" value="mtribino" />
-			<property name="hibernate.connection.password" value="cabeza18"/>
-			<property name="hibernate.hbm2ddl.auto" value="update"/>
+			<property name="hibernate.connection.url" value="jdbc:mysql://mysql.java.linti.unlp.edu.ar/jyaa2020_bd12"/>
+			<property name="hibernate.connection.username" value="jyaa2020_usr12" />
+			<property name="hibernate.connection.password" value="jyaa2020_pwd12"/>
+			<property name="hibernate.hbm2ddl.auto" value="create"/>
 			<property name="hibernate.show_sql" value="true"/>
         	<property name="hibernate.format_sql" value="false"/>
 		</properties>

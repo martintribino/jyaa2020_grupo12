@@ -18,10 +18,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
+import org.hibernate.validator.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 //import org.hibernate.validator.constraints.Email;
@@ -29,7 +28,6 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.security.Encrypt;
 
 @Entity
@@ -51,7 +49,6 @@ public class Usuario implements Serializable {
 	private String nombreUsuario;
 	@Basic
     @Size(min = 4, max = 150, message = "clave debe tener entre 4 y 150 caracteres")
-    @JsonProperty(access = Access.WRITE_ONLY)
 	private String clave;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
@@ -66,7 +63,7 @@ public class Usuario implements Serializable {
 	@Basic
     @Email(message = "El mail debe ser válido")
 	@Column(name="email", unique=true, updatable= true)
-	@NotBlank(message = "Por favor proporcione un email")
+    @Size(min = 3, max = 255, message = "email debe tener entre 3 y 255 caracteres")
 	private String email;
 	@Basic
 	private int telefono;
@@ -164,10 +161,12 @@ public class Usuario implements Serializable {
 		this.nombreUsuario = nombreUsuario;
 	}
 
+	@JsonProperty
 	public String getClave() {
 		return clave;
 	}
 
+	@JsonIgnore
 	public void setClave(String clave) {
 		this.clave = clave;
 	}
