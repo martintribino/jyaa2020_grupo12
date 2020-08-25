@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -34,10 +35,7 @@ public class EtiquetaController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarEtiquetas() {
 		List<Etiqueta> etiquetas = etiDAO.listar();
-		if (etiquetas.isEmpty())
-			return Response.noContent().build();
-		else
-			return Response.ok().entity(etiquetas).build();
+		return Response.ok().entity(etiquetas).build();
 	}
 
 	@GET
@@ -49,6 +47,36 @@ public class EtiquetaController {
 			return Response.ok().entity(etiqueta).build();
 		else
 			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la etiqueta").build();
+	}
+
+	@GET
+	@Path("{etiqueta}/meinteresa")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response meInteresaObra(@PathParam("etiqueta") String etiquetaStr,
+			@Context HttpServletRequest httpServletRequest,
+			@Context HttpServletResponse httpServletResponse
+			) {
+		Etiqueta etiqueta = etiDAO.etiquetaPorNombre(etiquetaStr);
+		if (etiqueta != null) {
+            String token = JWToken.getToken(httpServletRequest);
+            try
+            {
+                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
+                if(usuario != null) {
+                	usuario.addEtiquetaFav(etiqueta);
+                	usuDAO.actualizar(usuario);
+                	return Response.ok().entity("Etiqueta agregada para usuario").build();
+                } else {
+        			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el usuario").build();
+                }
+            }
+            catch (Exception ex)
+            {
+            	throw ex;
+            }
+		} else {
+			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la etiqueta").build();
+		}
 	}
 
 	@POST
@@ -94,33 +122,24 @@ public class EtiquetaController {
 		}
 	}
 
-	@GET
-	@Path("{etiqueta}/meinteresa")
+	@DELETE
+	@Path("{etiqueta}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response meInteresaObra(@PathParam("etiqueta") String etiquetaStr,
-			@Context HttpServletRequest httpServletRequest,
-			@Context HttpServletResponse httpServletResponse
-			) {
-		Etiqueta etiqueta = etiDAO.etiquetaPorNombre(etiquetaStr);
-		if (etiqueta != null) {
-            String token = JWToken.getToken(httpServletRequest);
-            try
-            {
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
-                if(usuario != null) {
-                	usuario.addEtiquetaFav(etiqueta);
-                	usuDAO.actualizar(usuario);
-                	return Response.ok().entity("Etiqueta agregada para usuario").build();
-                } else {
-        			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el usuario").build();
-                }
-            }
-            catch (Exception ex)
-            {
-            	throw ex;
-            }
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la etiqueta").build();
+	public Response eliminarEtiqueta(@PathParam("etiqueta") String etiquetaStr) {
+		try
+		{
+			Etiqueta etiqueta = etiDAO.etiquetaPorNombre(etiquetaStr);
+			if (etiqueta != null) {
+				etiDAO.eliminar(etiqueta);
+				return Response.ok().entity(etiqueta).build();
+			} else {
+				return Response.status(Response.Status.NOT_FOUND).entity("La etiqueta no existe").build();
+			}
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar la etiqueta").build();
 		}
 	}
 

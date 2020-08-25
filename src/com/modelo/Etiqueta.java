@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,29 +30,39 @@ public class Etiqueta implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private Long id;
 	@Basic
 	@Column(name="nombre", unique=true, updatable= true)
-    @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
+    @Size(min = 1, max = 150, message = "nombre debe tener entre 1 y 150 caracteres")
 	private String nombre;
-	@Basic
-    @Size(max = 150, message = "descripcion debe tener como máximo 150 caracteres")
-	private String descripcion = "";
-    @ManyToMany(mappedBy = "etiquetas")
+	@JsonIgnore
+    @ManyToMany(
+    		fetch = FetchType.LAZY,
+    		mappedBy = "etiquetas",
+    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
+			targetEntity = Artista.class)
     private Set<Artista> artistas = new HashSet<Artista>();
-    @ManyToMany(mappedBy = "etiquetas")
+	@JsonIgnore
+    @ManyToMany(
+    		fetch = FetchType.LAZY,
+    		mappedBy = "etiquetas",
+    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
+			targetEntity = Espacio.class)
     private Set<Espacio> espacios = new HashSet<Espacio>();
-    @ManyToMany(mappedBy = "etiquetas")
+	@JsonIgnore
+    @ManyToMany(
+    		fetch = FetchType.LAZY,
+    		mappedBy = "etiquetas",
+    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
+			targetEntity = Obra.class)
     private Set<Obra> obras = new HashSet<Obra>();
 
 	public Etiqueta() {
-		this.setNombre("nombre");
+		this.setNombre("");
 	}
 
-	public Etiqueta(String nombre, String descripcion) {
+	public Etiqueta(String nombre) {
 		this.setNombre(nombre);
-		this.setDescripcion(descripcion);
 	}
 
 	public Long getId() {
@@ -69,36 +81,16 @@ public class Etiqueta implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
 	public Set<Artista> getArtistas() {
 		return artistas;
-	}
-
-	public void setArtistas(Set<Artista> artistas) {
-		this.artistas = artistas;
 	}
 
 	public Set<Espacio> getEspacios() {
 		return espacios;
 	}
 
-	public void setEspacios(Set<Espacio> espacios) {
-		this.espacios = espacios;
-	}
-
 	public Set<Obra> getObras() {
 		return obras;
-	}
-
-	public void setObras(Set<Obra> obras) {
-		this.obras = obras;
 	}
 
 }

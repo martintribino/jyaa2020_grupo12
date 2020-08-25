@@ -16,10 +16,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "espacio")
@@ -53,21 +52,27 @@ public class Espacio implements Serializable {
 	@OneToOne(
 			optional = false,
 			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
+			cascade = {CascadeType.ALL},
+			orphanRemoval = true
 	)
-    private Direccion direccion = new Direccion();
-	@JsonIgnore
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
-    @JoinTable(
+    private Direccion direccion;
+    @ManyToMany(
+    		fetch = FetchType.LAZY,
+    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
+			targetEntity = Etiqueta.class)
+	@JoinTable(
         name = "espacio_etiqueta", 
         joinColumns = { @JoinColumn(name = "espacio_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") }
+        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") },
+		uniqueConstraints = {@UniqueConstraint(name = "etiqueta_espacio", columnNames={"etiqueta_id", "espacio_id"})}
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+	@OneToOne(mappedBy="espacio")
+	private Actividad actividad;
 
 	public Espacio() {
 		this.setNombre("nombre");
+		this.setDireccion(null);
 	}
 
 	public Espacio(String nombre, String descripcion, int capacidad, Espacio.Estados condicion,

@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -63,21 +64,20 @@ public class Actividad implements Serializable {
 	@OneToOne(
 			optional = true,
 			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH},
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
 			orphanRemoval = false
 	)
 	private Obra obra = null;
 	@OneToOne(
-			optional = true,
+			optional = false,
 			fetch = FetchType.EAGER,
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
 			orphanRemoval = false
 	)
-	private Espacio espacio = null;
-	@ManyToOne(
-			optional = false
-	)
-	private Edicion edicion = null;
+	private Espacio espacio;
+	@ManyToOne(optional = false)
+	@JoinColumn(name="edicion")
+	private Edicion edicion;
 
 	public Actividad() {
 		this.setNombre("nombre");

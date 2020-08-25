@@ -25,20 +25,20 @@ public class EspacioController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listarArtistas() {
+	public Response listarEspacios() {
 		List<Espacio> espacio = espacioDAO.listar();
 		return Response.ok().entity(espacio).build();
 	}
 
 	@GET
-	@Path("{idArtista}")
+	@Path("{idEspacio}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listarAArtista(@PathParam("idArtista") Long idArtista) {
-		Espacio artista = espacioDAO.encontrar(idArtista);
-		if (artista != null)
-			return Response.ok().entity(artista).build();
+	public Response listarEspacio(@PathParam("idEspacio") Long idEspacio) {
+		Espacio espacio = espacioDAO.encontrar(idEspacio);
+		if (espacio != null)
+			return Response.ok().entity(espacio).build();
 		else
-			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el artista").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el espacio").build();
 	}
 
 	@POST
@@ -64,11 +64,11 @@ public class EspacioController {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response editarArtista(Espacio espacio) {
+	public Response editarEspacio(Espacio espacio) {
 		try
 		{
-			Espacio art = espacioDAO.encontrar(espacio.getId());
-			if (art != null) {
+			Espacio esp = espacioDAO.encontrar(espacio.getId());
+			if (esp != null) {
 				espacioDAO.actualizar(espacio);
 				return Response.ok().entity(espacio).build();
 			} else {
@@ -85,7 +85,7 @@ public class EspacioController {
 	@DELETE
 	@Path("{idEspacio}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminarArtista(@PathParam("idEspacio") Long idEspacio) {
+	public Response eliminarEspacio(@PathParam("idEspacio") Long idEspacio) {
 		try
 		{
 			Espacio esp = espacioDAO.encontrar(idEspacio);

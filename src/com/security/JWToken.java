@@ -65,6 +65,19 @@ public class JWToken {
 
 		return token;
     }
+	
+	public static String generar(Long id) {
+	    Instant issuedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+	    Instant expiration = issuedAt.plus(JWToken.EXPIRATION_LIMIT, ChronoUnit.MINUTES);
+        JwtBuilder jwtBuilder = Jwts.builder()
+		        .setSubject(id.toString())
+		        .setIssuedAt(Date.from(issuedAt))
+		        .setExpiration(Date.from(expiration))
+		        .signWith(signatureAlgorithm, secret);
+		String token = jwtBuilder.compact();
+
+		return token;
+    }
 
     public static String parseToken(String token) {
         try {

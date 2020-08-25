@@ -17,5 +17,4 @@ public class ArtistaDAOJPA extends GenericDAOJPA<Artista> implements IArtistaDAO
 	public ArtistaDAOJPA() {
 		super(Artista.class);
 	}
-
 }

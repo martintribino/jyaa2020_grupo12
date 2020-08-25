@@ -71,7 +71,7 @@ public class Usuario implements Serializable {
 	private int telefono;
 	@ManyToOne(
 			fetch=FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}
+			cascade = {CascadeType.MERGE}
 	)
     private Rol rol = null;
 	@ManyToOne(

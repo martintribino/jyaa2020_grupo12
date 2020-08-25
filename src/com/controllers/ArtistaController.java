@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import com.IDAO.IArtistaDAO;
 import com.IDAO.IUsuarioDAO;
 import com.modelo.Artista;
+import com.modelo.Obra;
 import com.modelo.Usuario;
 import com.security.JWToken;
 
@@ -39,14 +40,23 @@ public class ArtistaController {
 	}
 
 	@GET
-	@Path("{idArtista}")
+	@Path("/{idArtista}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listarAArtista(@PathParam("idArtista") Long idArtista) {
-		Artista artista = artistaDAO.encontrar(idArtista);
-		if (artista != null)
-			return Response.ok().entity(artista).build();
-		else
-			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el artista").build();
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response listarArtista(@PathParam("idArtista") Long idArtista) {
+		try
+		{
+			Artista artista = artistaDAO.encontrar(idArtista);
+			if (artista != null)
+				return Response.ok(artista, MediaType.APPLICATION_JSON).build();
+			else
+				return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el artista").build();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo guardar el artista").build();
+		}
 	}
 
 	@GET
@@ -129,6 +139,9 @@ public class ArtistaController {
 		{
 			Artista art = artistaDAO.encontrar(idArtista);
 			if (art != null) {
+				/*for (Obra o : art.getObras()) {
+					art.removeObra(o);
+				}*/
 				artistaDAO.eliminar(art);
 				return Response.noContent().build();
 			} else {

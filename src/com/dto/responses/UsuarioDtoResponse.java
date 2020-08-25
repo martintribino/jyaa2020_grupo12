@@ -4,20 +4,31 @@ import com.modelo.Rol;
 
 public class UsuarioDtoResponse {
 
+	private Long id;
 	private String nombreUsuario;
 	private String token;
 	private Rol.Tipos rol;
 
 	public UsuarioDtoResponse() {
+		this.id = null;
 		this.nombreUsuario = "";
 		this.token = "";
 		this.rol = Rol.Tipos.VISITANTE;
 	}
 	
-	public UsuarioDtoResponse(String nombre, String token, Rol.Tipos rol) {
+	public UsuarioDtoResponse(Long id, String nombre, String token, Rol.Tipos rol) {
+		this.setId(id);;
 		this.setNombreUsuario(nombre);
 		this.setToken(token);
 		this.setRol(rol);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNombreUsuario() {

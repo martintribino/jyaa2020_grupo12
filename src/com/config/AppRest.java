@@ -42,12 +42,12 @@ public class AppRest extends Application {
 
 	@PostConstruct
 	public void init() {
-		System.out.println("creating roles ...");
-		ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
-		ServiceLocatorUtilities.enablePerThreadScope(locator);
-		ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
 		try
 		{
+			System.out.println("creating roles ...");
+			ServiceLocator locator = ServiceLocatorUtilities.createAndPopulateServiceLocator();
+			ServiceLocatorUtilities.enablePerThreadScope(locator);
+			ServiceLocatorUtilities.bind(locator, new PersistenciaBinder());
 			//Storage
 			IStorage storage = locator.getService(IStorage.class);
 			storage.init(servletContext);
@@ -55,23 +55,63 @@ public class AppRest extends Application {
 			IRolDAO rolDAO = locator.getService(IRolDAO.class);
 			//usuarios
 			IUsuarioDAO usuDAO = locator.getService(IUsuarioDAO.class);
-			//Administrador
 			Rol administrador = new Rol("Administrador", Rol.Tipos.ADMINISTRADOR);
-			rolDAO.guardar(administrador);
-			//Operador
-			Rol operador = new Rol("Operador", Rol.Tipos.OPERADOR);
-			rolDAO.guardar(operador);
-			//Participante
-			Rol participante = new Rol("Participante", Rol.Tipos.PARTICIPANTE);
-			rolDAO.guardar(participante);
-			//Visitante
-			Rol visitante = new Rol("Visitante", Rol.Tipos.VISITANTE);
-			rolDAO.guardar(visitante);
-			Direccion dir1 = new Direccion("26 nro 118", "La Plata", "Buenos Aires", 1900, -57.98648357391353, -34.92119690351051);
-			String pass = Encrypt.encode("admin123");
-			Usuario admin = new Usuario( "admin", pass, "Admin", "Admin", 123321, 123456,
-					"admin@admin.com", administrador, dir1);
-			usuDAO.actualizar(admin);
+			try
+			{
+				//Administrador
+				rolDAO.guardar(administrador);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+				System.out.println("Rol administrador ya creado.");
+			}
+			try
+			{
+				//Operador
+				Rol operador = new Rol("Operador", Rol.Tipos.OPERADOR);
+				rolDAO.guardar(operador);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+				System.out.println("Rol operador ya creado.");
+			}
+			try
+			{
+				//Participante
+				Rol participante = new Rol("Participante", Rol.Tipos.PARTICIPANTE);
+				rolDAO.guardar(participante);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+				System.out.println("Rol participante ya creado.");
+			}
+			try
+			{
+				//Visitante
+				Rol visitante = new Rol("Visitante", Rol.Tipos.VISITANTE);
+				rolDAO.guardar(visitante);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+				System.out.println("Rol visitante ya creado.");
+			}
+			try
+			{
+				Direccion dir1 = new Direccion("26 nro 118", "La Plata", "Buenos Aires", 1900, -57.98648357391353, -34.92119690351051);
+				String pass = Encrypt.encode("admin123");
+				Usuario admin = new Usuario( "admin", pass, "Admin", "Admin", 123321, 123456,
+						"admin@admin.com", administrador, dir1);
+				usuDAO.actualizar(admin);
+			}
+			catch (Exception e)
+			{
+				System.out.println(e);
+				System.out.println("Error creando usuario admin.");
+			}
 		}
 		catch (Exception e)
 		{

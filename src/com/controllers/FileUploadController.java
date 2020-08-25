@@ -19,8 +19,10 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.IDAO.IArtistaDAO;
+import com.IDAO.IObraDAO;
 import com.IDAO.IUsuarioDAO;
 import com.modelo.Artista;
+import com.modelo.Obra;
 import com.modelo.Usuario;
 import com.security.JWToken;
 import com.services.IStorage;
@@ -31,15 +33,18 @@ public class FileUploadController {
 	@Inject
 	private IArtistaDAO artistaDAO;
 	@Inject
+	private IObraDAO obraDAO;
+	@Inject
 	private IUsuarioDAO usuDAO;
 	@Inject
 	private IStorage storageSrv;
 
 	@POST
+	@Path("/artista")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response uploadImagen(
-		@FormDataParam("artista") Long idArtista,
+	public Response uploadImagenArtista(
+		@FormDataParam("objeto") Long idArtista,
 		@FormDataParam("archivos") InputStream uploadedInputStream,
 		@FormDataParam("archivos") FormDataContentDisposition fileDetails
 		) throws FileNotFoundException {
@@ -54,6 +59,38 @@ public class FileUploadController {
 				return Response.status(Response.Status.NO_CONTENT).build();
 			} else
 				return Response.status(Response.Status.BAD_REQUEST).entity("No existe el artista.").build();
+		}
+		catch (IOException eio) {
+			System.out.println(eio);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se puede guardar esa imagen en esa ruta.").build();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo guardar la imagen.").build();
+		}
+	}
+
+	@POST
+	@Path("/obra")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadImagenObra(
+		@FormDataParam("objeto") Long idObra,
+		@FormDataParam("archivos") InputStream uploadedInputStream,
+		@FormDataParam("archivos") FormDataContentDisposition fileDetails
+		) throws FileNotFoundException {
+		try
+		{
+			Obra obra = obraDAO.encontrar(idObra);
+			if (obra != null) {
+				String uploadedFileLocation = "obra" + obra.getId();
+				String pathname = this.storageSrv.guardar(uploadedInputStream, fileDetails.getFileName(), uploadedFileLocation);
+				obra.addFoto(pathname);
+				this.obraDAO.guardar(obra);
+				return Response.status(Response.Status.NO_CONTENT).build();
+			} else
+				return Response.status(Response.Status.BAD_REQUEST).entity("No existe la obra.").build();
 		}
 		catch (IOException eio) {
 			System.out.println(eio);

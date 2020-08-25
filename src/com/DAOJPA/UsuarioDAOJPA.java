@@ -1,7 +1,9 @@
 package com.DAOJPA;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import org.jvnet.hk2.annotations.Service;
@@ -24,10 +26,23 @@ public class UsuarioDAOJPA extends GenericDAOJPA<Usuario> implements IUsuarioDAO
 
 	@Override
 	public List<Usuario> recuperarUsuario(String userName) {
-		TypedQuery<Usuario> consulta = this.getEntityManager()
-				.createQuery("SELECT u FROM Usuario u WHERE u.nombreUsuario = :nombreUsu", Usuario.class);
-		consulta.setParameter("nombreUsu", userName);
-		return (List<Usuario>) consulta.getResultList();
+		EntityTransaction transaction = this.getEntityManager().getTransaction();
+		List<Usuario> list = new ArrayList<Usuario>();
+		try
+		{
+			transaction.begin();
+			TypedQuery<Usuario> consulta = this.getEntityManager()
+					.createQuery("SELECT u FROM Usuario u WHERE u.nombreUsuario = :nombreUsu", Usuario.class);
+			consulta.setParameter("nombreUsu", userName);
+			list = consulta.getResultList();
+			transaction.commit();
+			return list;
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
 	}
 
 	@Override

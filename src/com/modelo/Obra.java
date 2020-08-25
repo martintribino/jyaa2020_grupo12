@@ -10,16 +10,17 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "obra")
@@ -33,7 +34,6 @@ public class Obra implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private Long id;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
@@ -44,29 +44,35 @@ public class Obra implements Serializable {
 	@Basic
     @Column(name = "duracion", nullable = false)
 	private int duracion = 60;
-	@JsonIgnore
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
+	@ManyToMany(
+			fetch = FetchType.EAGER,
+			cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
+			targetEntity = Artista.class)
     @JoinTable(
         name = "obra_artista", 
         joinColumns = { @JoinColumn(name = "obra_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "artista_id") }
-    )
+        inverseJoinColumns = { @JoinColumn(name = "artista_id") },
+        uniqueConstraints = {@UniqueConstraint(name = "obra_artista", columnNames={"obra_id", "artista_id"})})
 	private Set<Artista> artistas = new HashSet<Artista>();
-	@JsonIgnore
 	@ElementCollection
 	@CollectionTable(
         name = "obra_fotos",
         joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
     )
 	private Set<String> fotos = new HashSet<String>();
-	@JsonIgnore
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE })
-    @JoinTable(
+    @ManyToMany(
+    		fetch = FetchType.LAZY,
+    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
+			targetEntity = Etiqueta.class)
+	@JoinTable(
         name = "obra_etiqueta", 
         joinColumns = { @JoinColumn(name = "obra_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") }
+        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") },
+		uniqueConstraints = {@UniqueConstraint(name = "etiqueta_obra", columnNames={"etiqueta_id", "obra_id"})}
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+	@OneToOne(mappedBy="obra")
+	private Actividad actividad;
 
 	public Obra() {
 		this.setNombre("nombre");
@@ -111,11 +117,19 @@ public class Obra implements Serializable {
 	}
 
 	public Set<Artista> getArtistas() {
-		return artistas;
+		return new HashSet<Artista>(artistas);
 	}
 
 	public void setArtistas(Set<Artista> artistas) {
 		this.artistas = artistas;
+	}
+
+	public Actividad getActividad() {
+		return actividad;
+	}
+
+	public void setActividad(Actividad actividad) {
+		this.actividad = actividad;
 	}
 
 	public Set<String> getFotos() {
@@ -124,6 +138,15 @@ public class Obra implements Serializable {
 
 	public void setFotos(Set<String> fotos) {
 		this.fotos = fotos;
+	}
+
+	public void addFoto(String foto) {
+		this.fotos.add(foto);
+	}
+
+	public void removeFoto(String foto) {
+		if(this.fotos.contains(foto))
+			this.fotos.remove(foto);
 	}
 
 	public Set<Etiqueta> getEtiquetas() {

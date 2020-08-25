@@ -30,7 +30,8 @@ public class AuthController {
 		        if (usu.verificarClave(usuario.getClave())) {
 		        	String token = JWToken.generar(usu.getNombreUsuario());
 					UsuarioDtoResponse resp = new UsuarioDtoResponse();
-					resp.setNombreUsuario(usuario.getNombreUsuario());
+					resp.setNombreUsuario(usu.getNombreUsuario());
+					resp.setId(usu.getId());
 					resp.setToken(token);
 					if(usu.getRol() != null)
 						resp.setRol(usu.getRol().getTipo());

@@ -1,26 +1,31 @@
 package com.modelo;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "direccion", uniqueConstraints={@UniqueConstraint(name = "latitud_longitud", columnNames={"longitud", "latitud"})})
-public class Direccion {
+public class Direccion implements Serializable {
+
+	/**
+	 * Direccion
+	 */
+	private static final long serialVersionUID = -5081842452260474805L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private Long id;
     @Basic
     @Size(max = 100, message = "nombre debe tener entre menos de 100 caracteres")
@@ -40,6 +45,8 @@ public class Direccion {
 	private double longitud;
 	@Basic
 	private double latitud;
+	@OneToOne(mappedBy="direccion")
+	private Espacio espacio;
 
 	public Direccion() {
 	}

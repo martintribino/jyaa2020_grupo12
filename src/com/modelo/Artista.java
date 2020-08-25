@@ -9,12 +9,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.JoinColumn;
 import javax.validation.constraints.Size;
 
@@ -48,17 +50,24 @@ public class Artista implements Serializable {
         joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
     )
 	private Set<String> fotos = new HashSet<String>();
-	@JsonIgnore
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
-    @JoinTable(
+    @ManyToMany(
+    		fetch = FetchType.LAZY,
+    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
+			targetEntity = Etiqueta.class)
+	@JoinTable(
         name = "artista_etiqueta", 
         joinColumns = { @JoinColumn(name = "artista_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") }
+        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") },
+		uniqueConstraints = {@UniqueConstraint(name = "etiqueta_artista", columnNames={"etiqueta_id", "artista_id"})}
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
 	@JsonIgnore
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH})
-    Set<Obra> obras = new HashSet<Obra>();
+    @ManyToMany(
+    		fetch = FetchType.LAZY,
+    		mappedBy = "artistas",
+    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
+			targetEntity = Obra.class)
+	private Set<Obra> obras = new HashSet<Obra>();
 
 	public Artista() {
 		this.setNombre("nombre");
@@ -120,7 +129,6 @@ public class Artista implements Serializable {
 		if(this.fotos.contains(foto))
 			this.fotos.remove(foto);
 	}
-
 	public Set<Etiqueta> getEtiquetas() {
 		return etiquetas;
 	}
@@ -128,5 +136,21 @@ public class Artista implements Serializable {
 	public void setEtiquetas(Set<Etiqueta> etiquetas) {
 		this.etiquetas = etiquetas;
 	}
+
+	public Set<Obra> getObras() {
+		return obras;
+	}
+
+	/*public void addObra(Obra obra) {
+		obras.add(obra);
+		obra.getArtistas().add(this);
+	}
+	
+	public void removeObra(Obra obra) {
+		if(!obras.contains(obra))
+			return;
+		obras.remove(obra);
+		obra.removeArtista(this);
+	}*/
 
 }

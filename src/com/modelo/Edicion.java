@@ -2,9 +2,7 @@ package com.modelo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -42,7 +40,6 @@ public class Edicion implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private Long id;
 	@Basic
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
@@ -68,7 +65,7 @@ public class Edicion implements Serializable {
 			orphanRemoval = true
 	)
 	@JsonIgnore
-	private List<Actividad> actividades = new ArrayList<Actividad>();
+	private Set<Actividad> actividades = new HashSet<Actividad>();
 	@JsonIgnore
 	@ElementCollection
 	@CollectionTable(
@@ -139,17 +136,12 @@ public class Edicion implements Serializable {
 		this.fotos = fotos;
 	}
 
-	public List<Actividad> getActividades() {
+	public Set<Actividad> getActividades() {
 		return actividades;
 	}
 
-	public void setActividades(List<Actividad> actividades) {
+	public void setActividades(Set<Actividad> actividades) {
 		this.actividades = actividades;
-	}
-
-	public void addActividad(Actividad actividad) {
-		this.actividades.add(actividad);
-		actividad.setEdicion(this);
 	}
 
 }

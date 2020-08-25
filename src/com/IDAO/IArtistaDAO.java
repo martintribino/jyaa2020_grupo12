@@ -10,5 +10,4 @@ public interface IArtistaDAO extends IGenericDAO<Artista> {
 	/**
 	 * Artista DAO interface
 	 */
-
 }

@@ -36,12 +36,21 @@ public class ActividadController {
 	@GET
 	@Path("{idActividad}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public Response listarActividad(@PathParam("idActividad") Long idActividad) {
-		Actividad actividad = actdao.encontrar(idActividad);
-		if (actividad != null)
-			return Response.ok().entity(actividad).build();
-		else
-			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la actividad").build();
+		try
+		{
+			Actividad actividad = actdao.encontrar(idActividad);
+			if (actividad != null)
+				return Response.ok(actividad, MediaType.APPLICATION_JSON).build();
+			else
+				return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la actividad").build();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo retornar la actividad").build();
+		}
 	}
 
 	@POST
@@ -51,7 +60,7 @@ public class ActividadController {
 		try
 		{
 			if (!actdao.existe(actividad) && actdao.esValida(actividad)) {
-				actdao.guardar(actividad);
+				actdao.actualizar(actividad);
 				return Response.ok().entity(actividad).build();
 			} else {
 				return Response.status(Response.Status.CONFLICT).entity("La actividad ya existe").build();
@@ -65,16 +74,14 @@ public class ActividadController {
 	}
 
 	@PUT
-	@Path("{idActividad}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response editarActividad(@PathParam("idActividad") Long idActividad, Actividad actividad) {
-		Actividad act = actdao.encontrar(idActividad);
+	public Response editarActividad(Actividad actividad) {
+		Actividad act = actdao.encontrar(actividad.getId());
 		if (act != null) {
 			try
 			{
 				if (actdao.esValida(actividad)) {
-					actividad.setId(act.getId());
 					actdao.actualizar(actividad);
 					return Response.ok().entity(actividad).build();
 				} else {
