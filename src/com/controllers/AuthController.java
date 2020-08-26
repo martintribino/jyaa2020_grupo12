@@ -46,7 +46,7 @@ public class AuthController {
 		catch(Exception ex)
 		{
 			System.out.println(ex);
-			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo logear el usuario").build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex).build();
 		}
 	}
 

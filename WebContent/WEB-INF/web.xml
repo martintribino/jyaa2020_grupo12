@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
 		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-  <display-name>jyaa20_g12_en5et2</display-name>
+  <display-name>jyaa20_grupo12</display-name>
   <welcome-file-list>
     <welcome-file>ng/index.html</welcome-file>
   </welcome-file-list>

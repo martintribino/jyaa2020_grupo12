@@ -18,7 +18,6 @@ import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 @Entity
 @Table(name = "asistencia",uniqueConstraints={@UniqueConstraint(name = "usuario_obra", columnNames={"usuario_id", "obra_id"})})
@@ -39,7 +38,7 @@ public class Asistencia implements Serializable {
 	@JsonIgnore
 	private Long id;
 	@Column(name="qrcode", unique = true, updatable = true)
-    @JsonProperty(access = Access.READ_ONLY)
+    @JsonProperty
 	private String qrcode;
 	@Basic
 	private Asistencia.Estados estado;

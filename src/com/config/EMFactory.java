@@ -8,16 +8,15 @@ import org.glassfish.hk2.api.Factory;
 
 public class EMFactory implements Factory<EntityManager> {
 
-    private final EntityManagerFactory emf;
+    private final EntityManager em;
 
     @Inject
-    public EMFactory (EntityManagerFactory emf){
-        this.emf = emf;
+    public EMFactory(EntityManagerFactory emf){
+        this.em = emf.createEntityManager();
     }
 
     @Override
     public EntityManager provide() {
-        final EntityManager em = emf.createEntityManager();
         return em;
     }
 

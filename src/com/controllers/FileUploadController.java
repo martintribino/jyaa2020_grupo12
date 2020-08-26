@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -44,9 +45,9 @@ public class FileUploadController {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response uploadImagenArtista(
-		@FormDataParam("objeto") Long idArtista,
-		@FormDataParam("archivos") InputStream uploadedInputStream,
-		@FormDataParam("archivos") FormDataContentDisposition fileDetails
+			@NotEmpty @FormDataParam("objeto") Long idArtista,
+			@NotEmpty @FormDataParam("archivos") InputStream uploadedInputStream,
+			@NotEmpty @FormDataParam("archivos") FormDataContentDisposition fileDetails
 		) throws FileNotFoundException {
 		try
 		{
