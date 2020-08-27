@@ -3,13 +3,10 @@ package com.services;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import javax.inject.Inject;
 import javax.servlet.ServletContext;
 import javax.xml.bind.DatatypeConverter;
 
 import org.jvnet.hk2.annotations.Service;
-
-import com.helpers.StorageProperties;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +21,13 @@ public class StorageService implements IStorage {
 	public static final String SANITIZE = "[^a-zA-Z0-9\\._]+";
 	public static Path rootLocation;
 	public static final long limit = 1024 * 256;    // 256 KB
-	@Inject
-	StorageProperties properties;
+	private static final String location =  "upload-dir";
 
 	public void FileSystemStorageService(ServletContext servletContext) {
-		String absoluteFilePath = servletContext.getRealPath(properties.getLocation());
+		String absoluteFilePath = servletContext.getRealPath(location);
+		if (absoluteFilePath == null) {
+			absoluteFilePath = servletContext.getRealPath("") + location;
+		}
 		StorageService.rootLocation = Paths.get(absoluteFilePath);
 	}
 

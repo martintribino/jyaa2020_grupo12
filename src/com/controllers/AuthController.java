@@ -13,14 +13,13 @@ import com.dto.responses.UsuarioDtoResponse;
 import com.modelo.Usuario;
 import com.security.JWToken;
 
-@Path("/")
+@Path("/login")
 public class AuthController {
 
 	@Inject
 	private IUsuarioDAO udao;
 
 	@POST
-	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response login(UsuarioDtoRequest usuario) {
 		try
