@@ -10,7 +10,6 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +18,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -44,15 +42,12 @@ public class Obra implements Serializable {
 	@Basic
     @Column(name = "duracion", nullable = false)
 	private int duracion = 60;
-	@ManyToMany(
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH},
-			targetEntity = Artista.class)
-    @JoinTable(
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinTable(
         name = "obra_artista", 
-        joinColumns = { @JoinColumn(name = "obra_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "artista_id") },
-        uniqueConstraints = {@UniqueConstraint(name = "obra_artista", columnNames={"obra_id", "artista_id"})})
+        joinColumns = { @JoinColumn(name = "obra_id", referencedColumnName = "id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "artista_id", referencedColumnName = "id") }
+    )
 	private Set<Artista> artistas = new HashSet<Artista>();
 	@ElementCollection
 	@CollectionTable(
@@ -60,15 +55,11 @@ public class Obra implements Serializable {
         joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
     )
 	private Set<String> fotos = new HashSet<String>();
-    @ManyToMany(
-    		fetch = FetchType.LAZY,
-    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
-			targetEntity = Etiqueta.class)
+    @ManyToMany(cascade = {CascadeType.ALL})
 	@JoinTable(
         name = "obra_etiqueta", 
-        joinColumns = { @JoinColumn(name = "obra_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") },
-		uniqueConstraints = {@UniqueConstraint(name = "etiqueta_obra", columnNames={"etiqueta_id", "obra_id"})}
+        joinColumns = { @JoinColumn(name = "obra_id", referencedColumnName = "id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id", referencedColumnName = "id") }
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
 	@OneToOne(mappedBy="obra")
@@ -155,6 +146,34 @@ public class Obra implements Serializable {
 
 	public void setEtiquetas(Set<Etiqueta> etiquetas) {
 		this.etiquetas = etiquetas;
+	}
+
+	public void addEtiqueta(Etiqueta etiqueta) {
+		if(!this.etiquetas.contains(etiqueta)) {
+			this.etiquetas.add(etiqueta);
+			etiqueta.addObra(this);
+		}
+	}
+
+	public void removeEtiqueta(Etiqueta etiqueta) {
+		if(this.etiquetas.contains(etiqueta)) {
+			this.etiquetas.remove(etiqueta);
+			etiqueta.removeObra(this);
+		}
+	}
+
+	public void addArtista(Artista artista) {
+		if(!this.artistas.contains(artista)) {
+			this.artistas.add(artista);
+			artista.addObra(this);
+		}
+	}
+
+	public void removeArtista(Artista artista) {
+		if(this.artistas.contains(artista)) {
+			this.artistas.remove(artista);
+			artista.removeObra(this);
+		}
 	}
 
 }

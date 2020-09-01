@@ -15,13 +15,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.IDAO.IEspacioDAO;
+import com.IDAO.IEtiquetaDAO;
 import com.modelo.Espacio;
+import com.modelo.Etiqueta;
 
 @Path("/api/espacios")
 public class EspacioController {
 
 	@Inject
 	private IEspacioDAO espacioDAO;
+	@Inject
+	private IEtiquetaDAO etiquetaDAO;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -79,6 +83,36 @@ public class EspacioController {
 		{
 			System.out.println(ex);
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar el espacio").build();
+		}
+	}
+
+	@PUT
+	@Path("/etiqueta/{nombre}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response agregarEtiqueta(
+			@PathParam("nombre") String nombre,
+			Espacio espacio
+	) {
+		try
+		{
+			Espacio esp = espacioDAO.encontrar(espacio.getId());
+			if (esp != null) {
+				Etiqueta etiqueta = etiquetaDAO.etiquetaPorNombre(nombre);
+				if (etiqueta == null) {
+					etiqueta = new Etiqueta(nombre);
+				}
+				esp.addEtiqueta(etiqueta);
+				espacioDAO.actualizar(esp);
+				return Response.ok().entity(esp).build();
+			} else {
+				return Response.status(Response.Status.NOT_FOUND).entity("El artista no existe").build();
+			}
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo agregar la etiqueta").build();
 		}
 	}
 

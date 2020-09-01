@@ -18,9 +18,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.IDAO.IArtistaDAO;
+import com.IDAO.IEtiquetaDAO;
 import com.IDAO.IUsuarioDAO;
 import com.modelo.Artista;
-import com.modelo.Obra;
+import com.modelo.Etiqueta;
 import com.modelo.Usuario;
 import com.security.JWToken;
 
@@ -31,6 +32,8 @@ public class ArtistaController {
 	private IArtistaDAO artistaDAO;
 	@Inject
 	private IUsuarioDAO usuDAO;
+	@Inject
+	private IEtiquetaDAO etiquetaDAO;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -131,6 +134,36 @@ public class ArtistaController {
 		}
 	}
 
+	@PUT
+	@Path("/etiqueta/{nombre}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response agregarEtiqueta(
+			@PathParam("nombre") String nombre,
+			Artista artista
+	) {
+		try
+		{
+			Artista art = artistaDAO.encontrar(artista.getId());
+			if (art != null) {
+				Etiqueta etiqueta = etiquetaDAO.etiquetaPorNombre(nombre);
+				if (etiqueta == null) {
+					etiqueta = new Etiqueta(nombre);
+				}
+				artista.addEtiqueta(etiqueta);
+				artistaDAO.actualizar(artista);
+				return Response.ok().entity(artista).build();
+			} else {
+				return Response.status(Response.Status.NOT_FOUND).entity("El artista no existe").build();
+			}
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo agregar la etiqueta").build();
+		}
+	}
+
 	@DELETE
 	@Path("{idArtista}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -139,9 +172,6 @@ public class ArtistaController {
 		{
 			Artista art = artistaDAO.encontrar(idArtista);
 			if (art != null) {
-				/*for (Obra o : art.getObras()) {
-					art.removeObra(o);
-				}*/
 				artistaDAO.eliminar(art);
 				return Response.noContent().build();
 			} else {

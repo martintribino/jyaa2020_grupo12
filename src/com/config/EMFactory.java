@@ -2,7 +2,6 @@ package com.config;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 import org.glassfish.hk2.api.Factory;
 
@@ -11,8 +10,8 @@ public class EMFactory implements Factory<EntityManager> {
     private final EntityManager em;
 
     @Inject
-    public EMFactory(EntityManagerFactory emf){
-        this.em = emf.createEntityManager();
+    public EMFactory(EMFFactory emf){
+        this.em = emf.provide().createEntityManager();
     }
 
     @Override

@@ -16,7 +16,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
@@ -56,15 +55,11 @@ public class Espacio implements Serializable {
 			orphanRemoval = true
 	)
     private Direccion direccion;
-    @ManyToMany(
-    		fetch = FetchType.LAZY,
-    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
-			targetEntity = Etiqueta.class)
+    @ManyToMany(cascade = {CascadeType.ALL})
 	@JoinTable(
         name = "espacio_etiqueta", 
-        joinColumns = { @JoinColumn(name = "espacio_id") }, 
-        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id") },
-		uniqueConstraints = {@UniqueConstraint(name = "etiqueta_espacio", columnNames={"etiqueta_id", "espacio_id"})}
+        joinColumns = { @JoinColumn(name = "espacio_id", referencedColumnName = "id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "etiqueta_id", referencedColumnName = "id") }
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
 	@OneToOne(mappedBy="espacio")
@@ -116,6 +111,14 @@ public class Espacio implements Serializable {
 		this.capacidad = capacidad;
 	}
 
+	public Direccion getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(Direccion direccion) {
+		this.direccion = direccion;
+	}
+
 	public Espacio.Estados getCondicion() {
 		return condicion;
 	}
@@ -132,12 +135,18 @@ public class Espacio implements Serializable {
 		this.etiquetas = etiquetas;
 	}
 
-	public Direccion getDireccion() {
-		return direccion;
+	public void addEtiqueta(Etiqueta etiqueta) {
+		if(!this.etiquetas.contains(etiqueta)) {
+			this.etiquetas.add(etiqueta);
+			etiqueta.addEspacio(this);
+		}
 	}
 
-	public void setDireccion(Direccion direccion) {
-		this.direccion = direccion;
+	public void removeEtiqueta(Etiqueta etiqueta) {
+		if(this.etiquetas.contains(etiqueta)) {
+			this.etiquetas.remove(etiqueta);
+			etiqueta.removeEspacio(this);
+		}
 	}
 
 }

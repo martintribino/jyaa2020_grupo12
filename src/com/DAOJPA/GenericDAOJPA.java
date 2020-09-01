@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -13,7 +12,6 @@ import javax.persistence.TypedQuery;
 import org.jvnet.hk2.annotations.Service;
 
 import com.IDAO.IGenericDAO;
-import com.config.EMFFactory;
 import com.config.EMFactory;
 
 @Service
@@ -25,21 +23,16 @@ public class GenericDAOJPA<T> implements Serializable, IGenericDAO<T> {
 
 	private static final long serialVersionUID = 1566326305462430716L;
 
-	private EntityManager entityManager;
+	@Inject
+	private EMFactory entityManager;
 	protected Class<T> entityClass;
 	
 	public GenericDAOJPA(Class<T> clase) {
 		this.entityClass = clase;
 	}
-	
-	@PostConstruct
-	public void init() {
-		EMFFactory emfFactory = new EMFFactory();
-		this.entityManager = emfFactory.provide().createEntityManager();
-	}
 
 	public EntityManager getEntityManager() {
-		return entityManager;
+		return entityManager.provide();
 	}
 
 	@Override

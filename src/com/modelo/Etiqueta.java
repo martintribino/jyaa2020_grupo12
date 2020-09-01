@@ -5,10 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,29 +30,17 @@ public class Etiqueta implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Basic
-	@Column(name="nombre", unique=true, updatable= true)
     @Size(min = 1, max = 150, message = "nombre debe tener entre 1 y 150 caracteres")
+	@Column(name="nombre", unique=true, updatable= true)
 	private String nombre;
 	@JsonIgnore
-    @ManyToMany(
-    		fetch = FetchType.LAZY,
-    		mappedBy = "etiquetas",
-    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
-			targetEntity = Artista.class)
+    @ManyToMany(mappedBy = "etiquetas")
     private Set<Artista> artistas = new HashSet<Artista>();
 	@JsonIgnore
-    @ManyToMany(
-    		fetch = FetchType.LAZY,
-    		mappedBy = "etiquetas",
-    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
-			targetEntity = Espacio.class)
+    @ManyToMany(mappedBy = "etiquetas")
     private Set<Espacio> espacios = new HashSet<Espacio>();
 	@JsonIgnore
-    @ManyToMany(
-    		fetch = FetchType.LAZY,
-    		mappedBy = "etiquetas",
-    		cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH},
-			targetEntity = Obra.class)
+    @ManyToMany(mappedBy = "etiquetas")
     private Set<Obra> obras = new HashSet<Obra>();
 
 	public Etiqueta() {
@@ -83,6 +69,48 @@ public class Etiqueta implements Serializable {
 
 	public Set<Artista> getArtistas() {
 		return artistas;
+	}
+
+	public void addArtista(Artista artista) {
+		if(!this.artistas.contains(artista)) {
+			this.artistas.add(artista);
+			artista.addEtiqueta(this);
+		}
+	}
+
+	public void removeArtista(Artista artista) {
+		if(this.artistas.contains(artista)) {
+			this.artistas.remove(artista);
+			artista.removeEtiqueta(this);
+		}
+	}
+
+	public void addObra(Obra obra) {
+		if(!this.obras.contains(obra)) {
+			this.obras.add(obra);
+			obra.addEtiqueta(this);
+		}
+	}
+
+	public void removeObra(Obra obra) {
+		if(this.obras.contains(obra)) {
+			this.obras.remove(obra);
+			obra.removeEtiqueta(this);
+		}
+	}
+
+	public void addEspacio(Espacio espacio) {
+		if(!this.espacios.contains(espacio)) {
+			this.espacios.add(espacio);
+			espacio.addEtiqueta(this);
+		}
+	}
+
+	public void removeEspacio(Espacio espacio) {
+		if(this.espacios.contains(espacio)) {
+			this.espacios.remove(espacio);
+			espacio.removeEtiqueta(this);
+		}
 	}
 
 	public Set<Espacio> getEspacios() {

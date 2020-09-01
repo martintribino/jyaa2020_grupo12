@@ -14,7 +14,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.IDAO.IEtiquetaDAO;
 import com.IDAO.IObraDAO;
+import com.modelo.Etiqueta;
 import com.modelo.Obra;
 
 @Path("/api/obras")
@@ -22,6 +24,8 @@ public class ObraController {
 
 	@Inject
 	private IObraDAO obraDAO;
+	@Inject
+	private IEtiquetaDAO etiquetaDAO;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -48,7 +52,7 @@ public class ObraController {
 		try
 		{
 			if (!obraDAO.existe(obra)) {
-				obraDAO.guardar(obra);
+				obraDAO.actualizar(obra);
 				return Response.ok().entity(obra).build();
 			} else {
 				return Response.status(Response.Status.CONFLICT).entity("La obra ya existe").build();
@@ -79,6 +83,36 @@ public class ObraController {
 		{
 			System.out.println(ex);
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar la obra").build();
+		}
+	}
+
+	@PUT
+	@Path("/etiqueta/{nombre}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response agregarEtiqueta(
+			@PathParam("nombre") String nombre,
+			Obra obra
+	) {
+		try
+		{
+			Obra o = obraDAO.encontrar(obra.getId());
+			if (o != null) {
+				Etiqueta etiqueta = etiquetaDAO.etiquetaPorNombre(nombre);
+				if (etiqueta == null) {
+					etiqueta = new Etiqueta(nombre);
+				}
+				o.addEtiqueta(etiqueta);
+				obraDAO.actualizar(o);
+				return Response.ok().entity(o).build();
+			} else {
+				return Response.status(Response.Status.NOT_FOUND).entity("La obra no existe").build();
+			}
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo agregar la etiqueta").build();
 		}
 	}
 
