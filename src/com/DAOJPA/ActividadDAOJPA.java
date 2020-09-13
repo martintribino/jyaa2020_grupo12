@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
 import org.jvnet.hk2.annotations.Service;
@@ -30,12 +31,40 @@ public class ActividadDAOJPA extends GenericDAOJPA<Actividad> implements IActivi
 		List<Actividad> list = new ArrayList<Actividad>();
 		try
 		{
+			if (actividad.getDesde().isAfter(actividad.getHasta()))
+				return false;
 			transaction.begin();
 			TypedQuery<Actividad> consulta = this.getEntityManager()
-					.createQuery("SELECT a FROM Actividad a WHERE ((NOT (a.desde > :afin) and NOT (:ainicio > a.hasta)) and (a.espacio != null and a.espacio.id <> :aespacio))", Actividad.class);
-			consulta.setParameter("ainicio", actividad.getDesde());
-			consulta.setParameter("afin", actividad.getHasta());
+					.createQuery("SELECT a FROM Actividad a WHERE (:ainicio <= a.hastaDate and :afin >= a.desdeDate and a.espacio.id = :aespacio)", Actividad.class);
+			consulta.setParameter("ainicio", actividad.getDesdeDate(), TemporalType.TIMESTAMP);
+			consulta.setParameter("afin", actividad.getHastaDate(), TemporalType.TIMESTAMP);
 			consulta.setParameter("aespacio", actividad.getEspacio().getId());
+			list = consulta.getResultList();
+			transaction.commit();
+			return list.isEmpty();
+		}
+		catch (Exception ex)
+		{
+			transaction.rollback();
+			throw ex;
+		}
+	}
+
+	@Override
+	public Boolean esValidaUpdate(Actividad actividad) {
+		EntityTransaction transaction = this.getEntityManager().getTransaction();
+		List<Actividad> list = new ArrayList<Actividad>();
+		try
+		{
+			if (actividad.getDesde().isAfter(actividad.getHasta()))
+				return false;
+			transaction.begin();
+			TypedQuery<Actividad> consulta = this.getEntityManager()
+					.createQuery("SELECT a FROM Actividad a WHERE ((:ainicio <= a.hastaDate and :afin >= a.desdeDate and a.espacio.id = :aespacio) and (a.id <> :aid))", Actividad.class);
+			consulta.setParameter("ainicio", actividad.getDesdeDate(), TemporalType.TIMESTAMP);
+			consulta.setParameter("afin", actividad.getHastaDate(), TemporalType.TIMESTAMP);
+			consulta.setParameter("aespacio", actividad.getEspacio().getId());
+			consulta.setParameter("aid", actividad.getId());
 			list = consulta.getResultList();
 			transaction.commit();
 			return list.isEmpty();

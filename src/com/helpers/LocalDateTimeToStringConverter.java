@@ -10,8 +10,7 @@ import com.fasterxml.jackson.databind.util.StdConverter;
 public class LocalDateTimeToStringConverter extends StdConverter<LocalDateTime, String> {
 	static final DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder()
             .parseCaseInsensitive().parseLenient()
-            //.parseDefaulting(ChronoField.YEAR_OF_ERA, 2016L)
-            .appendPattern("yyyy-MM-dd'T'HH:mm");
+            .appendPattern(GenericHelper.LOCALDATETIME_FORMAT);
 	static final DateTimeFormatter DATE_FORMATTER = builder.toFormatter(Locale.ENGLISH);
 
 	@Override
@@ -20,3 +19,4 @@ public class LocalDateTimeToStringConverter extends StdConverter<LocalDateTime, 
 	}
 
 }
+

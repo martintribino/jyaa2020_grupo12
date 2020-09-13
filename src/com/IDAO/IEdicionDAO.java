@@ -14,5 +14,7 @@ public interface IEdicionDAO extends IGenericDAO<Edicion> {
 	 * Edicion DAO interface
 	 */
 
+	public Boolean esValida(Edicion edicion);
+	public Boolean esValidaUpdate(Edicion edicion);
 	public List<Edicion> recuperarXFecha(LocalDateTime fecha);
 }

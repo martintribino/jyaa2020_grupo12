@@ -14,10 +14,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "espacio")
@@ -62,8 +65,13 @@ public class Espacio implements Serializable {
         inverseJoinColumns = { @JoinColumn(name = "etiqueta_id", referencedColumnName = "id") }
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
-	@OneToOne(mappedBy="espacio")
-	private Actividad actividad;
+	@OneToMany(
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
+			orphanRemoval = false
+	)
+	@JsonIgnore
+	//private Actividad actividad;
+    Set<Actividad> actividades = new HashSet<Actividad>();
 
 	public Espacio() {
 		this.setNombre("nombre");
@@ -125,6 +133,14 @@ public class Espacio implements Serializable {
 
 	public void setCondicion(Espacio.Estados condicion) {
 		this.condicion = condicion;
+	}
+
+	public Set<Actividad> getActividades() {
+		return actividades;
+	}
+
+	public void setActividades(Set<Actividad> actividades) {
+		this.actividades = actividades;
 	}
 
 	public Set<Etiqueta> getEtiquetas() {

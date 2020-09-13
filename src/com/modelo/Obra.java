@@ -20,6 +20,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "obra")
 public class Obra implements Serializable {
@@ -48,6 +51,7 @@ public class Obra implements Serializable {
         joinColumns = { @JoinColumn(name = "obra_id", referencedColumnName = "id") }, 
         inverseJoinColumns = { @JoinColumn(name = "artista_id", referencedColumnName = "id") }
     )
+    @JsonIgnoreProperties(value="obras")
 	private Set<Artista> artistas = new HashSet<Artista>();
 	@ElementCollection
 	@CollectionTable(
@@ -62,6 +66,7 @@ public class Obra implements Serializable {
         inverseJoinColumns = { @JoinColumn(name = "etiqueta_id", referencedColumnName = "id") }
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+	@JsonIgnore
 	@OneToOne(mappedBy="obra")
 	private Actividad actividad;
 

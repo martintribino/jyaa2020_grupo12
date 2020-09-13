@@ -12,6 +12,7 @@ public interface IActividadDAO extends IGenericDAO<Actividad> {
 	 */
 
 	public Boolean esValida(Actividad actividad);
+	public Boolean esValidaUpdate(Actividad actividad);
 	public Actividad encontrarPorObra(Long idObra);
 
 }

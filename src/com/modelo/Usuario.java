@@ -65,8 +65,9 @@ public class Usuario implements Serializable {
 	private int telefono;
 	@ManyToOne(
 			fetch=FetchType.EAGER,
-			cascade = {CascadeType.MERGE}
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}
 	)
+	@JoinColumn(name="rol_id")
     private Rol rol = null;
 	@ManyToOne(
 			fetch=FetchType.EAGER,
@@ -157,6 +158,7 @@ public class Usuario implements Serializable {
 		this.nombreUsuario = nombreUsuario;
 	}
 
+	@JsonIgnore
 	public String getClave() {
 		return clave;
 	}

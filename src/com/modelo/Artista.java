@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "artista")
@@ -55,8 +55,9 @@ public class Artista implements Serializable {
         inverseJoinColumns = { @JoinColumn(name = "etiqueta_id", referencedColumnName = "id") }
     )
     Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
-	@JsonIgnore
+	//@JsonIgnore
     @ManyToMany(mappedBy = "artistas")
+    @JsonIgnoreProperties(value="artistas")
 	private Set<Obra> obras = new HashSet<Obra>();
 
 	public Artista() {

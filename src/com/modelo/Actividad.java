@@ -1,6 +1,7 @@
 package com.modelo;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.Basic;
@@ -19,6 +20,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -45,18 +47,22 @@ public class Actividad implements Serializable {
 	@Basic
     @Size(max = 150, message = "descripcion debe tener como máximo 150 caracteres")
 	private String descripcion = "";
-	@Basic
     @Column(name = "desde", nullable = false)
     @JsonSerialize(converter = LocalDateTimeToStringConverter.class)
     @JsonDeserialize(converter = StringToLocalDateTimeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = GenericHelper.LOCALDATETIME_FORMAT)
-	private LocalDateTime desde = LocalDateTime.now();
-	@Basic
+	private LocalDateTime desde;
     @Column(name = "hasta", nullable = false)
     @JsonSerialize(converter = LocalDateTimeToStringConverter.class)
     @JsonDeserialize(converter = StringToLocalDateTimeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = GenericHelper.LOCALDATETIME_FORMAT)
-	private LocalDateTime hasta = LocalDateTime.now();
+	private LocalDateTime hasta;
+    @Column(name = "desde_date", nullable = false)
+	@JsonIgnore
+	private Timestamp desdeDate;
+    @Column(name = "hasta_date", nullable = false)
+	@JsonIgnore
+	private Timestamp hastaDate;
 	@Basic
     @Min(value = 0, message = "Entradas debe ser mayor o igual que 0")
     @Column(name = "entradas_vendidas")
@@ -68,12 +74,14 @@ public class Actividad implements Serializable {
 			orphanRemoval = false
 	)
 	private Obra obra = null;
-	@OneToOne(
+	/*@OneToOne(
 			optional = false,
 			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
+			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH},
 			orphanRemoval = false
-	)
+	)*/
+	@ManyToOne(optional = false)
+	@JoinColumn(name="espacio")
 	private Espacio espacio;
 	@ManyToOne(optional = false)
 	@JoinColumn(name="edicion")
@@ -136,6 +144,8 @@ public class Actividad implements Serializable {
 
 	public void setDesde(LocalDateTime desde) {
 		this.desde = desde;
+		Timestamp ts = Timestamp.valueOf(desde);
+		this.desdeDate = ts;
 	}
 
 	public LocalDateTime getHasta() {
@@ -144,6 +154,18 @@ public class Actividad implements Serializable {
 
 	public void setHasta(LocalDateTime hasta) {
 		this.hasta = hasta;
+		Timestamp ts = Timestamp.valueOf(hasta);
+		this.hastaDate = ts;
+	}
+
+	@JsonIgnore
+	public Timestamp getDesdeDate() {
+		return desdeDate;
+	}
+
+	@JsonIgnore
+	public Timestamp getHastaDate() {
+		return hastaDate;
 	}
 
 	public String getDescripcion() {

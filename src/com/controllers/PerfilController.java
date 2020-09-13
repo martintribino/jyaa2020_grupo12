@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.IDAO.IUsuarioDAO;
-import com.dto.responses.PerfilDTOResponse;
 import com.modelo.Usuario;
 
 @Path("/api/perfil")

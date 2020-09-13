@@ -43,17 +43,25 @@ public class UsuarioController {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response crearUsuario(Usuario usuario) {
+	public Response crearUsuario(@HeaderParam(JWToken.AUTHORIZATION_HEADER) String rawToken, Usuario usuario) {
 		try
 		{
 			if (!udao.existe(usuario)) {
+		        String token = JWToken.getToken(rawToken);
+		        String usrnmOwner = JWToken.parseToken(token);
+		        Usuario own = udao.encontrarPorNombre(usrnmOwner);
+		        if(own == null || !own.esAdministrador())
+					return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene autorizacion.").build();
+				if (usuario.getRol() == null || usuario.getRol().getTipo() == null) {
+					return Response.status(Response.Status.BAD_REQUEST).entity("Un usuario debe poser un rol.").build();
+				}
 				Rol rol = roldao.encontrarPorTipo(usuario.getRol().getTipo());
 				if (rol == null)
-					rol = roldao.encontrarPorTipo(Rol.Tipos.VISITANTE);
-				String pass = Encrypt.encode(usuario.getClave());
+					return Response.status(Response.Status.BAD_REQUEST).entity("No existe el rol").build();
 				usuario.setRol(rol);
+				String pass = Encrypt.encode(usuario.getClave());
 				usuario.setClave(pass);
-				udao.guardar(usuario);
+				udao.actualizar(usuario);
 				return Response.ok().entity(usuario).build();
 			} else {
 				return Response.status(Response.Status.CONFLICT).entity("El usuario ya existe").build();
@@ -79,18 +87,16 @@ public class UsuarioController {
 		        Usuario own = udao.encontrarPorNombre(usrnmOwner);
 		        if(own == null || (!own.esAdministrador() && own.getId() != usu.getId()))
 					return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene autorizacion.").build();
-				String pass = usu.getClave();
-				if(usuario.getClave() != null) {
-					pass = Encrypt.encode(usuario.getClave());
-					usu.setClave(pass);
+				String pass = Encrypt.encode(usuario.getClave());
+				usuario.setClave(pass);
+				if (usuario.getRol() == null || usuario.getRol().getTipo() == null) {
+					return Response.status(Response.Status.BAD_REQUEST).entity("Un usuario debe poser un rol.").build();
 				}
-				if (usuario.getRol() != null && usuario.getRol().getTipo() != null) {
-					Rol rol = roldao.encontrarPorTipo(usuario.getRol().getTipo());
-					usu.setRol(rol);
-				}
-				if (usuario.getDireccion() != null)
-					usu.setDireccion(usuario.getDireccion());
-				udao.actualizar(usu);
+				Rol rol = roldao.encontrarPorTipo(usuario.getRol().getTipo());
+				if (rol == null)
+					return Response.status(Response.Status.BAD_REQUEST).entity("No existe el rol").build();
+				usuario.setRol(rol);
+				udao.actualizar(usuario);
 				return Response.ok().entity(usuario).build();
 			}
 			catch(Exception ex)
@@ -106,11 +112,18 @@ public class UsuarioController {
 	@DELETE
 	@Path("{idUsuario}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminarUsuario(@PathParam("idUsuario") Long idUsuario) {
+	public Response eliminarUsuario(@HeaderParam(JWToken.AUTHORIZATION_HEADER) String rawToken, @PathParam("idUsuario") Long idUsuario) {
 		Usuario usu = udao.encontrar(idUsuario);
 		if (usu != null) {
 			try
 			{
+		        String token = JWToken.getToken(rawToken);
+		        String usrnmOwner = JWToken.parseToken(token);
+		        Usuario own = udao.encontrarPorNombre(usrnmOwner);
+		        if(own == null || !own.esAdministrador())
+					return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene autorizacion.").build();
+		        if(own.getId() == usu.getId())
+					return Response.status(Response.Status.UNAUTHORIZED).entity("No puede borrar su perfil.").build();
 				udao.eliminar(usu);
 				return Response.noContent().build();
 			}

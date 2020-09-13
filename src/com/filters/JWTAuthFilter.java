@@ -40,16 +40,16 @@ public class JWTAuthFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        if (HttpMethod.OPTIONS.matches(req.getMethod())) {
-            chain.doFilter(request, response);
-            return;
-        }
         res.setContentType("application/json");
         //CORS implement. por ahora aqui
         res.setHeader("Access-Control-Allow-Origin", CorsFilter.FRONT_URL);
         res.setHeader("Access-Control-Allow-Methods","OPTIONS,POST,HEAD,GET,PUT,DELETE");
         res.setHeader("Access-Control-Allow-Headers","Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
         res.setHeader("Access-Control-Allow-Credentials","true");
+        if (HttpMethod.OPTIONS.matches(req.getMethod())) {
+            chain.doFilter(request, response);
+            return;
+        }
         String token = JWToken.getToken(req);
         if (token == null) {
             res.setStatus(HttpServletResponse.SC_FORBIDDEN);

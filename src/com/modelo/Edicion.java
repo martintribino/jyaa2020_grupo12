@@ -1,6 +1,7 @@
 package com.modelo;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import com.helpers.GenericHelper;
 import com.helpers.LocalDateTimeToStringConverter;
 import com.helpers.StringToLocalDateTimeConverter;
@@ -42,23 +42,28 @@ public class Edicion implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Basic
+    @Column(name = "nombre", nullable = false, unique= true)
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
 	private String nombre;
 	@Basic
     @Size(max = 150, message = "descripcion debe tener como máximo 150 caracteres")
 	private String descripcion;
-	@Basic
     @Column(name = "desde", nullable = false)
     @JsonSerialize(converter = LocalDateTimeToStringConverter.class)
     @JsonDeserialize(converter = StringToLocalDateTimeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = GenericHelper.LOCALDATETIME_FORMAT)
 	private LocalDateTime desde;
-	@Basic
     @Column(name = "hasta", nullable = false)
     @JsonSerialize(converter = LocalDateTimeToStringConverter.class)
     @JsonDeserialize(converter = StringToLocalDateTimeConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = GenericHelper.LOCALDATETIME_FORMAT)
 	private LocalDateTime hasta;
+    @Column(name = "desde_date", nullable = false)
+	@JsonIgnore
+	private Timestamp desdeDate;
+    @Column(name = "hasta_date", nullable = false)
+	@JsonIgnore
+	private Timestamp hastaDate;
 	@OneToMany(
 			mappedBy="edicion",
 			cascade={CascadeType.ALL},
@@ -66,7 +71,6 @@ public class Edicion implements Serializable {
 	)
 	@JsonIgnore
 	private Set<Actividad> actividades = new HashSet<Actividad>();
-	@JsonIgnore
 	@ElementCollection
 	@CollectionTable(
         name = "edicion_fotos",
@@ -118,6 +122,8 @@ public class Edicion implements Serializable {
 
 	public void setDesde(LocalDateTime desde) {
 		this.desde = desde;
+		Timestamp ts = Timestamp.valueOf(desde);
+		this.desdeDate = ts;
 	}
 
 	public LocalDateTime getHasta() {
@@ -126,6 +132,18 @@ public class Edicion implements Serializable {
 
 	public void setHasta(LocalDateTime hasta) {
 		this.hasta = hasta;
+		Timestamp ts = Timestamp.valueOf(hasta);
+		this.hastaDate = ts;
+	}
+
+	@JsonIgnore
+	public Timestamp getDesdeDate() {
+		return desdeDate;
+	}
+
+	@JsonIgnore
+	public Timestamp getHastaDate() {
+		return hastaDate;
 	}
 
 	public Set<String> getFotos() {
@@ -134,6 +152,15 @@ public class Edicion implements Serializable {
 
 	public void setFotos(Set<String> fotos) {
 		this.fotos = fotos;
+	}
+
+	public void addFoto(String foto) {
+		this.fotos.add(foto);
+	}
+
+	public void removeFoto(String foto) {
+		if(this.fotos.contains(foto))
+			this.fotos.remove(foto);
 	}
 
 	public Set<Actividad> getActividades() {

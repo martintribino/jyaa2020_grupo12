@@ -47,7 +47,9 @@ public class EdicionController {
 	public Response crearEdicion(Edicion edicion) {
 		try
 		{
-			if (!edicionDAO.existe(edicion)) {
+			if (edicion.getDesde().isAfter(edicion.getHasta()))
+				return Response.status(Response.Status.BAD_REQUEST).entity("Fecha desde debe ser menor que fecha hasta").build();
+			if (!edicionDAO.existe(edicion) && edicionDAO.esValida(edicion)) {
 				edicionDAO.guardar(edicion);
 				return Response.ok().entity(edicion).build();
 			} else {
@@ -67,12 +69,16 @@ public class EdicionController {
 	public Response editarEdicion(Edicion edicion) {
 		try
 		{
+			if (edicion.getDesde().isAfter(edicion.getHasta()))
+				return Response.status(Response.Status.BAD_REQUEST).entity("Fecha desde debe ser menor que fecha hasta").build();
 			Edicion ed = edicionDAO.encontrar(edicion.getId());
-			if (ed != null) {
+			if (ed == null)
+				return Response.status(Response.Status.NOT_FOUND).entity("La edicion no existe").build();
+			if (edicionDAO.esValidaUpdate(edicion)) {
 				edicionDAO.actualizar(edicion);
 				return Response.ok().entity(edicion).build();
 			} else {
-				return Response.status(Response.Status.NOT_FOUND).entity("La edicion no existe").build();
+				return Response.status(Response.Status.BAD_REQUEST).entity("La edicion no es valida").build();
 			}
 		}
 		catch(Exception ex)

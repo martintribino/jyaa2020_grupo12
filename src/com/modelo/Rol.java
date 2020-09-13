@@ -1,12 +1,16 @@
 package com.modelo;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -35,6 +39,13 @@ public class Rol implements Serializable {
 	private String nombre;
 	@Column(name="tipo", unique=true, updatable= false)
     private Rol.Tipos tipo = Rol.Tipos.VISITANTE;
+	@OneToMany(
+		mappedBy="rol",
+		cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
+        orphanRemoval = false
+    )
+	@JsonIgnore
+	private Set<Usuario> usuarios = new HashSet<Usuario>();
 
 	public Rol() {
 		this.setNombre("nombre");
@@ -67,6 +78,14 @@ public class Rol implements Serializable {
 
 	public void setTipo(Rol.Tipos tipo) {
 		this.tipo = tipo;
+	}
+
+	public Set<Usuario> getUsuarios() {
+		return usuarios;
+	}
+
+	public void setUsuarios(Set<Usuario> usuarios) {
+		this.usuarios = usuarios;
 	}
 
 	@JsonIgnore

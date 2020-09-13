@@ -20,9 +20,11 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.IDAO.IArtistaDAO;
+import com.IDAO.IEdicionDAO;
 import com.IDAO.IObraDAO;
 import com.IDAO.IUsuarioDAO;
 import com.modelo.Artista;
+import com.modelo.Edicion;
 import com.modelo.Obra;
 import com.modelo.Usuario;
 import com.security.JWToken;
@@ -35,6 +37,8 @@ public class FileUploadController {
 	private IArtistaDAO artistaDAO;
 	@Inject
 	private IObraDAO obraDAO;
+	@Inject
+	private IEdicionDAO edicionDAO;
 	@Inject
 	private IUsuarioDAO usuDAO;
 	@Inject
@@ -92,6 +96,38 @@ public class FileUploadController {
 				return Response.status(Response.Status.NO_CONTENT).build();
 			} else
 				return Response.status(Response.Status.BAD_REQUEST).entity("No existe la obra.").build();
+		}
+		catch (IOException eio) {
+			System.out.println(eio);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se puede guardar esa imagen en esa ruta.").build();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo guardar la imagen.").build();
+		}
+	}
+
+	@POST
+	@Path("/edicion")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response uploadImagenEspacio(
+			@NotEmpty @FormDataParam("objeto") Long idEdicion,
+			@NotEmpty @FormDataParam("archivos") InputStream uploadedInputStream,
+			@NotEmpty @FormDataParam("archivos") FormDataContentDisposition fileDetails
+		) throws FileNotFoundException {
+		try
+		{
+			Edicion edicion = edicionDAO.encontrar(idEdicion);
+			if (edicion != null) {
+				String uploadedFileLocation = "edicion" + edicion.getId();
+				String pathname = this.storageSrv.guardar(uploadedInputStream, fileDetails.getFileName(), uploadedFileLocation);
+				edicion.addFoto(pathname);
+				this.edicionDAO.guardar(edicion);
+				return Response.status(Response.Status.NO_CONTENT).build();
+			} else
+				return Response.status(Response.Status.BAD_REQUEST).entity("No existe la edición.").build();
 		}
 		catch (IOException eio) {
 			System.out.println(eio);

@@ -15,13 +15,14 @@ public class GenericHelper {
 	private static final Pattern WHITESPACE = Pattern.compile("[\\s]");
 	private static final Pattern EDGESDHASHES = Pattern.compile("(^-|-$)");
 
-	public static final String LOCALDATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+	public static final String LOCALDATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	public static final String LOCALDATE_FORMAT = "yyyy-MM-dd";
 	public static final String LOCALTIME_FORMAT = "HH:mm:ss";
+    public static final SimpleDateFormat FORMATTER = new SimpleDateFormat(GenericHelper.LOCALDATETIME_FORMAT);
 
 	public static String slugToday() {
 		Date today = Calendar.getInstance().getTime();
-		Format formatter = new SimpleDateFormat("yyyy-D HH:mm:ss.SSSXXX");
+		Format formatter = new SimpleDateFormat(GenericHelper.LOCALDATETIME_FORMAT);
 		String s = formatter.format(today);
 		String slug = GenericHelper.toSlug(s);
 		return GenericHelper.toSlug(slug);

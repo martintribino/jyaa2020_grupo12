@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import com.IDAO.IActividadDAO;
 import com.modelo.Actividad;
+import com.modelo.Edicion;
 
 @Path("/api/actividades")
 public class ActividadController {
@@ -59,11 +60,17 @@ public class ActividadController {
 	public Response crearUsuario(Actividad actividad) {
 		try
 		{
-			if (!actdao.existe(actividad) && actdao.esValida(actividad)) {
+			if (actividad.getDesde().isAfter(actividad.getHasta()))
+				return Response.status(Response.Status.BAD_REQUEST).entity("Fecha desde debe ser menor que fecha hasta").build();
+			if (actdao.existe(actividad)) 
+				return Response.status(Response.Status.CONFLICT).entity("La actividad ya existe").build();
+			if (actividad.getEspacio() != null && actividad.getEntradasVendidas() > actividad.getEspacio().getCapacidad()) 
+				return Response.status(Response.Status.BAD_REQUEST).entity("Entradas vendidas no pueden ser mayor que la capacidad del espacio").build();
+			if (actdao.esValida(actividad)) {
 				actdao.actualizar(actividad);
 				return Response.ok().entity(actividad).build();
 			} else {
-				return Response.status(Response.Status.CONFLICT).entity("La actividad ya existe").build();
+				return Response.status(Response.Status.CONFLICT).entity("La actividad no es válida").build();
 			}
 		}
 		catch(Exception ex)
@@ -77,15 +84,23 @@ public class ActividadController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response editarActividad(Actividad actividad) {
-		Actividad act = actdao.encontrar(actividad.getId());
-		if (act != null) {
 			try
 			{
-				if (actdao.esValida(actividad)) {
+				if (actividad.getDesde().isAfter(actividad.getHasta()))
+					return Response.status(Response.Status.BAD_REQUEST).entity("Fecha desde debe ser menor que fecha hasta").build();
+				Edicion ed = actividad.getEdicion();
+				if (actividad.getDesde().isBefore(ed.getDesde()) || actividad.getHasta().isAfter(ed.getHasta()))
+					return Response.status(Response.Status.BAD_REQUEST).entity("Las fechas deben coincidir con la edicion").build();
+				Actividad act = actdao.encontrar(actividad.getId());
+				if (act == null)
+					return Response.status(Response.Status.NOT_FOUND).entity("La actividad no existe").build();
+				if (actividad.getEspacio() != null && actividad.getEntradasVendidas() > actividad.getEspacio().getCapacidad()) 
+					return Response.status(Response.Status.BAD_REQUEST).entity("Entradas vendidas no pueden ser mayor que la capacidad del espacio").build();
+				if (actdao.esValidaUpdate(actividad)) {
 					actdao.actualizar(actividad);
 					return Response.ok().entity(actividad).build();
 				} else {
-					return Response.status(Response.Status.BAD_REQUEST).entity("La actividad no es valida").build();
+					return Response.status(Response.Status.BAD_REQUEST).entity("La actividad no es válida").build();
 				}
 			}
 			catch(Exception ex)
@@ -93,9 +108,6 @@ public class ActividadController {
 				System.out.println(ex);
 				return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar la actividad").build();
 			}
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).entity("La actividad no existe").build();
-		}
 	}
 
 	@DELETE
