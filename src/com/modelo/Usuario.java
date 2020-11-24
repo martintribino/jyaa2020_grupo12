@@ -16,7 +16,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -25,6 +24,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.security.Encrypt;
 
 @Entity
@@ -63,6 +63,8 @@ public class Usuario implements Serializable {
 	private String email;
 	@Basic
 	private int telefono;
+	@Basic
+	private String avatar;
 	@ManyToOne(
 			fetch=FetchType.EAGER,
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}
@@ -74,22 +76,16 @@ public class Usuario implements Serializable {
 			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}
 	)
     private Direccion direccion = null;
-	@OneToMany(
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
-	)
+    @ManyToMany(mappedBy = "usuariosFav")
+    @JsonIgnoreProperties(value="usuariosFav")
 	@JsonIgnore
 	private Set<Artista> artistasFav = new HashSet<Artista>();
-	@OneToMany(
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
-	)
+    @ManyToMany(mappedBy = "usuariosFav")
+    @JsonIgnoreProperties(value="usuariosFav")
 	@JsonIgnore
 	private Set<Obra> obrasFav = new HashSet<Obra>();
-	@OneToMany(
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
-	)
+    @ManyToMany(mappedBy = "usuariosFav")
+    @JsonIgnoreProperties(value="usuariosFav")
 	@JsonIgnore
 	private Set<Etiqueta> etiquetasFav = new HashSet<Etiqueta>();
 	@JsonIgnore
@@ -158,7 +154,6 @@ public class Usuario implements Serializable {
 		this.nombreUsuario = nombreUsuario;
 	}
 
-	@JsonIgnore
 	public String getClave() {
 		return clave;
 	}
@@ -224,7 +219,17 @@ public class Usuario implements Serializable {
 	}
 
 	public void addArtistaFav(Artista artista) {
-		this.getArtistasFav().add(artista);
+	   if(!this.getArtistasFav().contains(artista)) {
+		   this.getArtistasFav().add(artista);
+           artista.addUsuarioFav(this);
+	   }
+	}
+
+	public void removeArtistaFav(Artista artista) {
+	   if(this.getArtistasFav().contains(artista)) {
+		   this.getArtistasFav().remove(artista);
+           artista.removeUsuarioFav(this);
+	   }
 	}
 
 	public Set<Obra> getObrasFav() {
@@ -236,7 +241,17 @@ public class Usuario implements Serializable {
 	}
 
 	public void addObraFav(Obra obra) {
-		this.getObrasFav().add(obra);
+	   if(!this.getObrasFav().contains(obra)) {
+		   this.getObrasFav().add(obra);
+           obra.addUsuarioFav(this);
+	   }
+	}
+
+	public void removeObraFav(Obra obra) {
+	   if(this.getObrasFav().contains(obra)) {
+		   this.getObrasFav().remove(obra);
+		   obra.removeUsuarioFav(this);
+	   }
 	}
 
 	public Set<Etiqueta> getEtiquetasFav() {
@@ -248,7 +263,17 @@ public class Usuario implements Serializable {
 	}
 
 	public void addEtiquetaFav(Etiqueta etiqueta) {
-		this.getEtiquetasFav().add(etiqueta);
+		if(!this.getEtiquetasFav().contains(etiqueta)) {
+			this.getEtiquetasFav().add(etiqueta);
+			etiqueta.addUsuarioFav(this);
+		}
+	}
+
+	public void removeEtiquetaFav(Etiqueta etiqueta) {
+	   if(this.getEtiquetasFav().contains(etiqueta)) {
+		   this.getEtiquetasFav().remove(etiqueta);
+		   etiqueta.removeUsuarioFav(this);
+	   }
 	}
 
 	public Direccion getDireccion() {
@@ -267,12 +292,47 @@ public class Usuario implements Serializable {
 		this.rol = rol;
 	}
 
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
 	public Boolean verificarClave(String clave) {
 		return Encrypt.matches(clave, this.getClave());
 	}
 	
 	public Boolean esAdministrador() {
 		return (this.getRol() != null && this.getRol().esAdministrador() );
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+			else if (!nombre.equals(other.nombre))
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.controllers;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,6 +13,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -32,18 +34,31 @@ public class UsuarioController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response listarUsuarios() {
-		List<Usuario> usuarios = udao.listar();
-		if (usuarios.isEmpty())
-			return Response.ok().entity(usuarios).build(); 
-		else
-			return Response.ok().entity(usuarios).build();
+	public Response listarUsuarios(@Context HttpServletRequest httpServletRequest) {
+		try
+		{
+			//chequeo permisos
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuarioOwner = udao.encontrarPorNombre(usrnmOwner);
+            if(usuarioOwner == null || !usuarioOwner.getRol().esAdministrador())
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
+			List<Usuario> usuarios = udao.listar();
+			return Response.ok(usuarios).build();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudieron obtener usuarios").build();
+		}
 	}
 
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response crearUsuario(@HeaderParam(JWToken.AUTHORIZATION_HEADER) String rawToken, Usuario usuario) {
+	public Response crearUsuario(
+			@HeaderParam(JWToken.AUTHORIZATION_HEADER) String rawToken,
+			Usuario usuario) {
 		try
 		{
 			if (!udao.existe(usuario)) {
@@ -62,7 +77,7 @@ public class UsuarioController {
 				String pass = Encrypt.encode(usuario.getClave());
 				usuario.setClave(pass);
 				udao.actualizar(usuario);
-				return Response.ok().entity(usuario).build();
+				return Response.ok(usuario).build();
 			} else {
 				return Response.status(Response.Status.CONFLICT).entity("El usuario ya existe").build();
 			}
@@ -78,17 +93,21 @@ public class UsuarioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response editarUsuario(@HeaderParam(JWToken.AUTHORIZATION_HEADER) String rawToken, Usuario usuario) {
-		Usuario usu = udao.encontrar(usuario.getId());
-		if (usu != null) {
-			try
-			{
+		try
+		{
+			Usuario usu = udao.encontrar(usuario.getId());
+			if (usu != null) {
 		        String token = JWToken.getToken(rawToken);
 		        String usrnmOwner = JWToken.parseToken(token);
 		        Usuario own = udao.encontrarPorNombre(usrnmOwner);
 		        if(own == null || (!own.esAdministrador() && own.getId() != usu.getId()))
 					return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene autorizacion.").build();
-				String pass = Encrypt.encode(usuario.getClave());
-				usuario.setClave(pass);
+		        if (usuario.getClave() != null) {
+					String pass = Encrypt.encode(usuario.getClave());
+					usuario.setClave(pass);
+		        } else {
+					usuario.setClave(usu.getClave());
+		        }
 				if (usuario.getRol() == null || usuario.getRol().getTipo() == null) {
 					return Response.status(Response.Status.BAD_REQUEST).entity("Un usuario debe poser un rol.").build();
 				}
@@ -97,15 +116,15 @@ public class UsuarioController {
 					return Response.status(Response.Status.BAD_REQUEST).entity("No existe el rol").build();
 				usuario.setRol(rol);
 				udao.actualizar(usuario);
-				return Response.ok().entity(usuario).build();
+				return Response.ok(usuario).build();
+			} else {
+				return Response.status(Response.Status.NOT_FOUND).entity("El usuario no existe").build();
 			}
-			catch(Exception ex)
-			{
-				System.out.println(ex);
-				return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar el usuario").build();
-			}
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).entity("El usuario no existe").build();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo actualizar el usuario").build();
 		}
 	}
 

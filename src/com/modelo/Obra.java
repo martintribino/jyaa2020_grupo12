@@ -45,7 +45,9 @@ public class Obra implements Serializable {
 	@Basic
     @Column(name = "duracion", nullable = false)
 	private int duracion = 60;
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(
+		cascade = {CascadeType.MERGE, CascadeType.PERSIST}
+	)
 	@JoinTable(
         name = "obra_artista", 
         joinColumns = { @JoinColumn(name = "obra_id", referencedColumnName = "id") }, 
@@ -59,7 +61,7 @@ public class Obra implements Serializable {
         joinColumns=@JoinColumn(name = "id", referencedColumnName = "id")
     )
 	private Set<String> fotos = new HashSet<String>();
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinTable(
         name = "obra_etiqueta", 
         joinColumns = { @JoinColumn(name = "obra_id", referencedColumnName = "id") }, 
@@ -69,6 +71,14 @@ public class Obra implements Serializable {
 	@JsonIgnore
 	@OneToOne(mappedBy="obra")
 	private Actividad actividad;
+    @ManyToMany(cascade = {CascadeType.DETACH/*, CascadeType.MERGE*/, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinTable(
+        name = "usuario_obra_fav", 
+        joinColumns = { @JoinColumn(name = "usuario_id", referencedColumnName = "id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "obra_id", referencedColumnName = "id") }
+    )
+    @JsonIgnoreProperties(value="obrasFav")
+	private Set<Usuario> usuariosFav = new HashSet<Usuario>();
 
 	public Obra() {
 		this.setNombre("nombre");
@@ -120,6 +130,16 @@ public class Obra implements Serializable {
 		this.artistas = artistas;
 	}
 
+	public void addArtista(Artista artista) {
+		this.artistas.add(artista);
+		artista.addObra(this);
+	}
+
+	public void removeArtista(Artista artista) {
+		this.artistas.remove(artista);
+		artista.removeObra(this);
+	}
+
 	public Actividad getActividad() {
 		return actividad;
 	}
@@ -152,33 +172,54 @@ public class Obra implements Serializable {
 	public void setEtiquetas(Set<Etiqueta> etiquetas) {
 		this.etiquetas = etiquetas;
 	}
-
+	
 	public void addEtiqueta(Etiqueta etiqueta) {
-		if(!this.etiquetas.contains(etiqueta)) {
-			this.etiquetas.add(etiqueta);
-			etiqueta.addObra(this);
+       if(!this.etiquetas.contains(etiqueta)) {
+           this.etiquetas.add(etiqueta);
+           etiqueta.addObra(this);
+       }
+   }
+
+   public void removeEtiqueta(Etiqueta etiqueta) {
+       if(this.etiquetas.contains(etiqueta)) {
+           this.etiquetas.remove(etiqueta);
+           etiqueta.removeObra(this);
+       }
+   }
+
+	public Set<Usuario> getUsuariosFav() {
+		return usuariosFav;
+	}
+
+	public void setUsuariosFav(Set<Usuario> usuariosFav) {
+		this.usuariosFav = usuariosFav;
+	}
+
+	public void addUsuarioFav(Usuario usuario) {
+		if(!this.getUsuariosFav().contains(usuario)) {
+			this.getUsuariosFav().add(usuario);
+			usuario.addObraFav(this);
+		}
+	}
+	
+	public void removeUsuarioFav(Usuario usuario) {
+		if(this.getUsuariosFav().contains(usuario)) {
+			this.getUsuariosFav().remove(usuario);
+			usuario.removeObraFav(this);
 		}
 	}
 
-	public void removeEtiqueta(Etiqueta etiqueta) {
-		if(this.etiquetas.contains(etiqueta)) {
-			this.etiquetas.remove(etiqueta);
-			etiqueta.removeObra(this);
-		}
+	@Override
+	public int hashCode() {
+        return getClass().hashCode();
 	}
 
-	public void addArtista(Artista artista) {
-		if(!this.artistas.contains(artista)) {
-			this.artistas.add(artista);
-			artista.addObra(this);
-		}
-	}
-
-	public void removeArtista(Artista artista) {
-		if(this.artistas.contains(artista)) {
-			this.artistas.remove(artista);
-			artista.removeObra(this);
-		}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+        if (!(obj instanceof Obra)) return false;
+		if (getClass() != obj.getClass()) return false;
+		return id != null && id.equals(((Obra) obj).getId());
 	}
 
 }

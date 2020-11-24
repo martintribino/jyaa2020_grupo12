@@ -15,6 +15,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "direccion", uniqueConstraints={@UniqueConstraint(name = "latitud_longitud", columnNames={"longitud", "latitud"})})
 public class Direccion implements Serializable {
@@ -46,6 +48,7 @@ public class Direccion implements Serializable {
 	@Basic
 	private double latitud;
 	@OneToOne(mappedBy="direccion")
+	@JsonIgnore
 	private Espacio espacio;
 
 	public Direccion() {
@@ -114,6 +117,42 @@ public class Direccion implements Serializable {
 
 	public void setLatitud(double latitud) {
 		this.latitud = latitud;
+	}
+
+	public Espacio getEspacio() {
+		return espacio;
+	}
+
+	public void setEspacio(Espacio espacio) {
+		this.espacio = espacio;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Direccion other = (Direccion) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+			else if (Double.compare(latitud, other.latitud) != 0 &&
+					Double.compare(longitud, other.longitud) != 0)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }

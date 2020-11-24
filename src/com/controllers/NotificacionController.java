@@ -45,25 +45,24 @@ public class NotificacionController {
 			Actividad act = actdao.encontrar(idActividad);
 			if (act != null) {
 	            String token = JWToken.getToken(httpServletRequest);
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
-                if(usuario != null /*&& usuario.getRol() != null*/) {
-                	//if(usuario.getRol().esOperador()) {
-        				Notificacion notificacion = new Notificacion(
-        						not.getNombre(),
-        						not.getTipo(),
-        						not.getEstado(),
-        						act
-        				);
-        				notdao.guardar(notificacion);
-        				return Response.ok().entity(notificacion).build();
-                	/*} else {
-            			return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
-                	}*/
+		        String usrnmOwner = JWToken.parseToken(token);
+		        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+                if(usuario != null) {
+                    if(!usuario.getRol().esOperador() && !usuario.getRol().esAdministrador())
+        				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
+    				Notificacion notificacion = new Notificacion(
+    						not.getNombre(),
+    						not.getTipo(),
+    						not.getEstado(),
+    						act
+    				);
+    				notdao.guardar(notificacion);
+    				return Response.ok().entity(notificacion).build();
                 } else {
         			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el usuario").build();
                 }
 			} else {
-				return Response.status(Response.Status.CONFLICT).entity("La actividad no existe").build();
+				return Response.status(Response.Status.CONFLICT).entity("La actividad existe").build();
 			}
 		}
 		catch(Exception ex)

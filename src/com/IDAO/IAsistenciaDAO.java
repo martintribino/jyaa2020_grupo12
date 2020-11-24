@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.jvnet.hk2.annotations.Contract;
 
+import com.modelo.Actividad;
 import com.modelo.Asistencia;
-import com.modelo.Obra;
 import com.modelo.Usuario;
 
 @Contract
@@ -15,7 +15,7 @@ public interface IAsistenciaDAO extends IGenericDAO<Asistencia> {
 	 * Asistencia DAO interface
 	 */
 
-	public Asistencia recuperarXObraYUsuario(Usuario usuario, Obra obra);
+	public Asistencia recuperarXActividadYUsuario(Usuario usuario, Actividad actividad);
 	public List<Asistencia> recuperarXUsuario(Usuario usuario);
-	public List<Asistencia> recuperarXObra(Obra obra);
+	public List<Asistencia> recuperarXActividad(Actividad actividad);
 }

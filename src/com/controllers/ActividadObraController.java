@@ -39,52 +39,26 @@ public class ActividadObraController {
 	private IActividadDAO actDAO;
 
 	@POST
-	@Path("{idObra}/meinteresa")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response meInteresaObra(@PathParam("idObra") Long idObra,
-			@Context HttpServletRequest httpServletRequest,
-			@Context HttpServletResponse httpServletResponse
-			) {
-		Obra obra = obraDAO.encontrar(idObra);
-		if (obra != null) {
-            String token = JWToken.getToken(httpServletRequest);
-            try
-            {
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
-                if(usuario != null) {
-                	usuario.addObraFav(obra);
-                	usuDAO.actualizar(usuario);
-                	return Response.ok().entity("Interes agregado").build();
-                } else {
-        			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el usuario").build();
-                }
-            }
-            catch (Exception ex)
-            {
-            	throw ex;
-            }
-		} else
-			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la obra").build();
-	}
-
-	@POST
-	@Path("{idObra}/asistire/")
+	@Path("{idActividad}/asistire/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response crearAsistenciaObra(
-			@PathParam("idObra") Long idObra,
+			@PathParam("idActividad") Long idActividad,
 			@Context HttpServletRequest httpServletRequest,
 			@Context HttpServletResponse httpServletResponse
 			) {
-		Obra obra = obraDAO.encontrar(idObra);
-		if (obra != null) {
-            String token = JWToken.getToken(httpServletRequest);
+		Actividad act = actDAO.encontrar(idActividad);
+		if (act != null) {
             try
             {
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
+                String token = JWToken.getToken(httpServletRequest);
+    	        String usrnmOwner = JWToken.parseToken(token);
+    	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
                 if(usuario != null) {
-                	Asistencia asist = asistDAO.recuperarXObraYUsuario(usuario, obra);
+                	if (!usuario.getRol().esParticipante() && !usuario.getRol().esAdministrador()  && !usuario.getRol().esOperador())
+        				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
+                	Asistencia asist = asistDAO.recuperarXActividadYUsuario(usuario, act);
                 	if (asist == null)
-                		asist = new Asistencia(usuario, obra);
+                		asist = new Asistencia(usuario, act);
             		asist.setEstado(Asistencia.Estados.ACTIVA);
                 	asistDAO.actualizar(asist);
                 	return Response.ok().entity(asist).build();
@@ -94,29 +68,33 @@ public class ActividadObraController {
             }
             catch (Exception ex)
             {
-            	throw ex;
+    			System.out.println(ex);
+    			return Response.status(Response.Status.BAD_REQUEST).entity("Error al registrar asistencia").build();
             }
 		} else
-			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la obra").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la actividad").build();
 	}
 
 	@PUT
-	@Path("{idObra}/validar/{codigo}")
+	@Path("{idActividad}/validar/{codigo}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response asistioObra(
-			@PathParam("idObra") Long idObra,
+			@PathParam("idActividad") Long idActividad,
 			@PathParam("codigo") String codigo,
 			@Context HttpServletRequest httpServletRequest,
 			@Context HttpServletResponse httpServletResponse
 			) {
-		Obra obra = obraDAO.encontrar(idObra);
-		if (obra != null) {
-            String token = JWToken.getToken(httpServletRequest);
+		Actividad act = actDAO.encontrar(idActividad);
+		if (act != null) {
             try
             {
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
+                String token = JWToken.getToken(httpServletRequest);
+    	        String usrnmOwner = JWToken.parseToken(token);
+    	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
                 if(usuario != null) {
-                	Asistencia asist = asistDAO.recuperarXObraYUsuario(usuario, obra);
+                	if (!usuario.getRol().esParticipante() && !usuario.getRol().esAdministrador())
+        				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
+                	Asistencia asist = asistDAO.recuperarXActividadYUsuario(usuario, act);
                 	if (asist.getQrcode().equals(codigo)) {
                 		asist.setEstado(Asistencia.Estados.ASISTIO);
                     	asistDAO.actualizar(asist);
@@ -130,10 +108,11 @@ public class ActividadObraController {
             }
             catch (Exception ex)
             {
-            	throw ex;
+    			System.out.println(ex);
+    			return Response.status(Response.Status.BAD_REQUEST).entity("Error al validar el codigo").build();
             }
 		} else
-			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la obra").build();
+			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la actividad").build();
 	}
 
 	@PUT
@@ -147,10 +126,11 @@ public class ActividadObraController {
 			) {
 		Obra obra = obraDAO.encontrar(idObra);
 		if (obra != null) {
-            String token = JWToken.getToken(httpServletRequest);
             try
             {
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
+                String token = JWToken.getToken(httpServletRequest);
+    	        String usrnmOwner = JWToken.parseToken(token);
+    	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
                 if(usuario != null) {
                 	if (puntaje >= 0 && puntaje <= 10) {
                     	Valoracion val = valDAO.recuperarXObraYUsuario(usuario, obra);
@@ -169,7 +149,8 @@ public class ActividadObraController {
             }
             catch (Exception ex)
             {
-            	throw ex;
+    			System.out.println(ex);
+    			return Response.status(Response.Status.BAD_REQUEST).entity("Error al valorar la obra").build();
             }
 		} else
 			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la obra").build();
@@ -186,10 +167,11 @@ public class ActividadObraController {
 			) {
 		Actividad act = actDAO.encontrarPorObra(idObra);
 		if (act != null) {
-            String token = JWToken.getToken(httpServletRequest);
             try
             {
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
+                String token = JWToken.getToken(httpServletRequest);
+    	        String usrnmOwner = JWToken.parseToken(token);
+    	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
                 if(usuario != null) {
                 	if (entradas > 0 && act.getEspacio() != null && (entradas + act.getEntradasVendidas() <= act.getEspacio().getCapacidad())) {
                     	act.setEntradasVendidas(entradas + act.getEntradasVendidas());
@@ -204,7 +186,8 @@ public class ActividadObraController {
             }
             catch (Exception ex)
             {
-            	throw ex;
+    			System.out.println(ex);
+    			return Response.status(Response.Status.BAD_REQUEST).entity("Error al vender las entradas").build();
             }
 		} else
 			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la actividad").build();

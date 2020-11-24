@@ -3,6 +3,7 @@ package com.controllers;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -11,15 +12,21 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.IDAO.IEdicionDAO;
+import com.IDAO.IUsuarioDAO;
 import com.modelo.Edicion;
+import com.modelo.Usuario;
+import com.security.JWToken;
 
 @Path("/api/ediciones")
 public class EdicionController {
 
+	@Inject
+	private IUsuarioDAO usuDAO;
 	@Inject
 	private IEdicionDAO edicionDAO;
 
@@ -44,9 +51,15 @@ public class EdicionController {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response crearEdicion(Edicion edicion) {
+	public Response crearEdicion(Edicion edicion,
+			@Context HttpServletRequest httpServletRequest) {
 		try
 		{
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+            if(usuario == null || !usuario.getRol().esAdministrador())
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
 			if (edicion.getDesde().isAfter(edicion.getHasta()))
 				return Response.status(Response.Status.BAD_REQUEST).entity("Fecha desde debe ser menor que fecha hasta").build();
 			if (!edicionDAO.existe(edicion) && edicionDAO.esValida(edicion)) {
@@ -66,9 +79,15 @@ public class EdicionController {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response editarEdicion(Edicion edicion) {
+	public Response editarEdicion(Edicion edicion,
+			@Context HttpServletRequest httpServletRequest) {
 		try
 		{
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+            if(usuario == null || !usuario.getRol().esAdministrador())
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
 			if (edicion.getDesde().isAfter(edicion.getHasta()))
 				return Response.status(Response.Status.BAD_REQUEST).entity("Fecha desde debe ser menor que fecha hasta").build();
 			Edicion ed = edicionDAO.encontrar(edicion.getId());
@@ -91,9 +110,15 @@ public class EdicionController {
 	@DELETE
 	@Path("{idEdicion}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminarEdicion(@PathParam("idEdicion") Long idEdicion) {
+	public Response eliminarEdicion(@PathParam("idEdicion") Long idEdicion,
+			@Context HttpServletRequest httpServletRequest) {
 		try
 		{
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+            if(usuario == null || !usuario.getRol().esAdministrador())
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
 			Edicion ed = edicionDAO.encontrar(idEdicion);
 			if (ed != null) {
 				edicionDAO.eliminar(ed);

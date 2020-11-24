@@ -14,8 +14,8 @@ public class PersistenciaBinder extends AbstractBinder {
 
 	@Override
     protected void configure() {
-		bind(EMFFactory.class).to(EntityManagerFactory.class).in(Singleton.class);
-		bind(EMFactory.class).to(EntityManager.class).in(RequestScoped.class);
+		bindFactory(EMFFactory.class).to(EntityManagerFactory.class).in(Singleton.class);
+		bindFactory(EMFactory.class).to(EntityManager.class).in(RequestScoped.class);
 		bind(JustInTimeServiceResolver.class).to(JustInTimeInjectionResolver.class);
     }
 

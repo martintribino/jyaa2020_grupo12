@@ -32,9 +32,10 @@ public class AuthController {
 					resp.setNombreUsuario(usu.getNombreUsuario());
 					resp.setId(usu.getId());
 					resp.setToken(token);
+					resp.setAvatar(usu.getAvatar());
 					if(usu.getRol() != null)
 						resp.setRol(usu.getRol().getTipo());
-					return Response.ok().entity(resp).build();
+					return Response.ok(resp).build();
 		        } else {
 					return Response.status(Response.Status.UNAUTHORIZED).entity("Credenciales incorrectas").build();
 		        }

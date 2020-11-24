@@ -3,6 +3,7 @@ package com.controllers;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -11,16 +12,22 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.IDAO.IActividadDAO;
+import com.IDAO.IUsuarioDAO;
 import com.modelo.Actividad;
 import com.modelo.Edicion;
+import com.modelo.Usuario;
+import com.security.JWToken;
 
 @Path("/api/actividades")
 public class ActividadController {
 
+	@Inject
+	private IUsuarioDAO usuDAO;
 	@Inject
 	private IActividadDAO actdao;
 
@@ -57,9 +64,15 @@ public class ActividadController {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response crearUsuario(Actividad actividad) {
+	public Response crearUsuario(Actividad actividad,
+			@Context HttpServletRequest httpServletRequest) {
 		try
 		{
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+        	if (usuario == null || (!usuario.getRol().esParticipante() && !usuario.getRol().esAdministrador()))
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
 			if (actividad.getDesde().isAfter(actividad.getHasta()))
 				return Response.status(Response.Status.BAD_REQUEST).entity("Fecha desde debe ser menor que fecha hasta").build();
 			if (actdao.existe(actividad)) 
@@ -83,9 +96,15 @@ public class ActividadController {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response editarActividad(Actividad actividad) {
+	public Response editarActividad(Actividad actividad,
+			@Context HttpServletRequest httpServletRequest) {
 			try
 			{
+	            String token = JWToken.getToken(httpServletRequest);
+		        String usrnmOwner = JWToken.parseToken(token);
+		        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+	        	if (usuario == null || (!usuario.getRol().esParticipante() && !usuario.getRol().esAdministrador()))
+					return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
 				if (actividad.getDesde().isAfter(actividad.getHasta()))
 					return Response.status(Response.Status.BAD_REQUEST).entity("Fecha desde debe ser menor que fecha hasta").build();
 				Edicion ed = actividad.getEdicion();
@@ -113,21 +132,27 @@ public class ActividadController {
 	@DELETE
 	@Path("{idActividad}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminarUsuario(@PathParam("idActividad") Long idActividad) {
-		Actividad actividad = actdao.encontrar(idActividad);
-		if (actividad != null) {
-			try
-			{
-				actdao.eliminar(actividad);
-				return Response.noContent().build();
-			}
-			catch(Exception ex)
-			{
-				System.out.println(ex);
-				return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo eliminar la actividad").build();
-			}
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).entity("La actividad no existe").build();
+	public Response eliminarUsuario(@PathParam("idActividad") Long idActividad,
+			@Context HttpServletRequest httpServletRequest) {
+		try
+		{
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+        	if (usuario == null || (!usuario.getRol().esParticipante() && !usuario.getRol().esAdministrador()))
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
+    		Actividad actividad = actdao.encontrar(idActividad);
+    		if (actividad != null) {
+    			actdao.eliminar(actividad);
+    			return Response.noContent().build();
+    		} else {
+    			return Response.status(Response.Status.NOT_FOUND).entity("La actividad no existe").build();
+    		}
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo eliminar la actividad").build();
 		}
 	}
 

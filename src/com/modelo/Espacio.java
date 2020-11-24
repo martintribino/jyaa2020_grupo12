@@ -70,7 +70,6 @@ public class Espacio implements Serializable {
 			orphanRemoval = false
 	)
 	@JsonIgnore
-	//private Actividad actividad;
     Set<Actividad> actividades = new HashSet<Actividad>();
 
 	public Espacio() {
@@ -150,19 +149,43 @@ public class Espacio implements Serializable {
 	public void setEtiquetas(Set<Etiqueta> etiquetas) {
 		this.etiquetas = etiquetas;
 	}
-
+	
 	public void addEtiqueta(Etiqueta etiqueta) {
-		if(!this.etiquetas.contains(etiqueta)) {
-			this.etiquetas.add(etiqueta);
-			etiqueta.addEspacio(this);
-		}
+       if(!this.etiquetas.contains(etiqueta)) {
+           this.etiquetas.add(etiqueta);
+           etiqueta.addEspacio(this);
+       }
+   }
+
+   public void removeEtiqueta(Etiqueta etiqueta) {
+       if(this.etiquetas.contains(etiqueta)) {
+           this.etiquetas.remove(etiqueta);
+           etiqueta.removeEspacio(this);
+       }
+   }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
 	}
 
-	public void removeEtiqueta(Etiqueta etiqueta) {
-		if(this.etiquetas.contains(etiqueta)) {
-			this.etiquetas.remove(etiqueta);
-			etiqueta.removeEspacio(this);
-		}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Espacio other = (Espacio) obj;
+		if (id == null) {
+			return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }

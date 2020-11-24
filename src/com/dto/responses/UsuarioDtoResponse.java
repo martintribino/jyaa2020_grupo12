@@ -8,19 +8,22 @@ public class UsuarioDtoResponse {
 	private String nombreUsuario;
 	private String token;
 	private Rol.Tipos rol;
+	private String avatar;
 
 	public UsuarioDtoResponse() {
 		this.id = null;
 		this.nombreUsuario = "";
 		this.token = "";
+		this.avatar = "";
 		this.rol = Rol.Tipos.VISITANTE;
 	}
 	
-	public UsuarioDtoResponse(Long id, String nombre, String token, Rol.Tipos rol) {
+	public UsuarioDtoResponse(Long id, String nombre, String token, Rol.Tipos rol, String avatar) {
 		this.setId(id);;
 		this.setNombreUsuario(nombre);
 		this.setToken(token);
 		this.setRol(rol);
+		this.setAvatar(avatar);
 	}
 
 	public Long getId() {
@@ -53,6 +56,14 @@ public class UsuarioDtoResponse {
 
 	public void setRol(Rol.Tipos rol) {
 		this.rol = rol;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 }

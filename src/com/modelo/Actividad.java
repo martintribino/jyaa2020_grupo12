@@ -3,6 +3,8 @@ package com.modelo;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -14,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -74,18 +77,18 @@ public class Actividad implements Serializable {
 			orphanRemoval = false
 	)
 	private Obra obra = null;
-	/*@OneToOne(
-			optional = false,
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.DETACH},
-			orphanRemoval = false
-	)*/
 	@ManyToOne(optional = false)
 	@JoinColumn(name="espacio")
 	private Espacio espacio;
 	@ManyToOne(optional = false)
 	@JoinColumn(name="edicion")
 	private Edicion edicion;
+	@OneToMany(mappedBy="actividad",
+			cascade={CascadeType.ALL},
+			orphanRemoval = true
+	)
+	@JsonIgnore
+    private Set<Asistencia> asistencias = new HashSet<Asistencia>();
 
 	public Actividad() {
 		this.setNombre("nombre");
@@ -190,6 +193,38 @@ public class Actividad implements Serializable {
 
 	public void setEntradasVendidas(int entradasVendidas) {
 		this.entradasVendidas = entradasVendidas;
+	}
+
+	public Set<Asistencia> getAsistencias() {
+		return asistencias;
+	}
+
+	public void setAsistencias(Set<Asistencia> asistencias) {
+		this.asistencias = asistencias;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Actividad other = (Actividad) obj;
+		if (id == null) {
+			return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }

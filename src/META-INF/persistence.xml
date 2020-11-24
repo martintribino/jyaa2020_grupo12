@@ -18,7 +18,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/x
 		<properties>
 			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
 			<property name="hibernate.connection.url" value="jdbc:mysql://localhost/jyaa2020_bd12"/>
-			<property name="hibernate.connection.username" value="mtribino" />
+			<property name="hibernate.connection.username" value="martin.tribino" />
 			<property name="hibernate.connection.password" value="cabeza18"/>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="update"/>

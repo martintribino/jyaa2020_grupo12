@@ -42,7 +42,7 @@ public class Edicion implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Basic
-    @Column(name = "nombre", nullable = false, unique= true)
+    @Column(name = "nombre", unique= true, updatable= true)
     @Size(min = 2, max = 100, message = "nombre debe tener entre 2 y 100 caracteres")
 	private String nombre;
 	@Basic
@@ -136,16 +136,6 @@ public class Edicion implements Serializable {
 		this.hastaDate = ts;
 	}
 
-	@JsonIgnore
-	public Timestamp getDesdeDate() {
-		return desdeDate;
-	}
-
-	@JsonIgnore
-	public Timestamp getHastaDate() {
-		return hastaDate;
-	}
-
 	public Set<String> getFotos() {
 		return fotos;
 	}
@@ -169,6 +159,51 @@ public class Edicion implements Serializable {
 
 	public void setActividades(Set<Actividad> actividades) {
 		this.actividades = actividades;
+	}
+
+	public Timestamp getDesdeDate() {
+		return desdeDate;
+	}
+
+	public void setDesdeDate(Timestamp desdeDate) {
+		this.desdeDate = desdeDate;
+	}
+
+	@JsonIgnore
+	public Timestamp getHastaDate() {
+		return hastaDate;
+	}
+
+	@JsonIgnore
+	public void setHastaDate(Timestamp hastaDate) {
+		this.hastaDate = hastaDate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Edicion other = (Edicion) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+			else if (!nombre.equals(other.nombre))
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }

@@ -49,36 +49,6 @@ public class EtiquetaController {
 			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la etiqueta").build();
 	}
 
-	@GET
-	@Path("{etiqueta}/meinteresa")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response meInteresaObra(@PathParam("etiqueta") String etiquetaStr,
-			@Context HttpServletRequest httpServletRequest,
-			@Context HttpServletResponse httpServletResponse
-			) {
-		Etiqueta etiqueta = etiDAO.etiquetaPorNombre(etiquetaStr);
-		if (etiqueta != null) {
-            String token = JWToken.getToken(httpServletRequest);
-            try
-            {
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
-                if(usuario != null) {
-                	usuario.addEtiquetaFav(etiqueta);
-                	usuDAO.actualizar(usuario);
-                	return Response.ok().entity("Etiqueta agregada para usuario").build();
-                } else {
-        			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el usuario").build();
-                }
-            }
-            catch (Exception ex)
-            {
-            	throw ex;
-            }
-		} else {
-			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro la etiqueta").build();
-		}
-	}
-
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -97,6 +67,42 @@ public class EtiquetaController {
 			System.out.println(ex);
 			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo guardar la etiqueta").build();
 		}
+	}
+
+	@PUT
+	@Path("{idEtiqueta}/meinteresa")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response meInteresaObra(@PathParam("idEtiqueta") Long idEtiqueta,
+			@Context HttpServletRequest httpServletRequest,
+			@Context HttpServletResponse httpServletResponse
+			) {
+        try
+        {
+			Etiqueta etiqueta = etiDAO.encontrar(idEtiqueta);
+			if (etiqueta != null) {
+	            String token = JWToken.getToken(httpServletRequest);
+		        String usrnmOwner = JWToken.parseToken(token);
+		        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+                if(usuario != null) {
+                	//toggle artistas favoritos
+                	if(etiqueta.getUsuariosFav().contains(usuario))
+                		etiqueta.removeUsuarioFav(usuario);
+                	else
+                		etiqueta.addUsuarioFav(usuario);
+                	etiDAO.actualizar(etiqueta);
+                	return Response.ok(etiqueta).build();
+                } else {
+        			return Response.status(Response.Status.BAD_REQUEST).entity("No existe el usuario").build();
+                }
+			} else {
+				return Response.status(Response.Status.BAD_REQUEST).entity("No existe la etiqueta").build();
+			}
+        }
+        catch (Exception ex)
+        {
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo guardar la etiqueta").build();
+        }
 	}
 
 	@PUT

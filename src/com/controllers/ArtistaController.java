@@ -62,7 +62,7 @@ public class ArtistaController {
 		}
 	}
 
-	@GET
+	@PUT
 	@Path("{idArtista}/meinteresa")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response interesaAArtista(@PathParam("idArtista") Long idArtista,
@@ -74,11 +74,16 @@ public class ArtistaController {
 			Artista artista = artistaDAO.encontrar(idArtista);
 			if (artista != null) {
 	            String token = JWToken.getToken(httpServletRequest);
-                Usuario usuario = usuDAO.encontrar(Long.valueOf(token));
+		        String usrnmOwner = JWToken.parseToken(token);
+		        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
                 if(usuario != null) {
-                	usuario.addArtistaFav(artista);
-                	usuDAO.actualizar(usuario);
-                	return Response.ok().entity("Artista agregado como favorito").build();
+                	//toggle artistas favoritos
+                	if(artista.getUsuariosFav().contains(usuario))
+                    	artista.removeUsuarioFav(usuario);
+                	else
+                    	artista.addUsuarioFav(usuario);
+                	artistaDAO.actualizar(artista);
+                	return Response.ok(artista, MediaType.APPLICATION_JSON).build();
                 } else {
         			return Response.status(Response.Status.NOT_FOUND).entity("No se encontro el usuario").build();
                 }
@@ -96,9 +101,15 @@ public class ArtistaController {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response crearArtista(Artista artista) {
+	public Response crearArtista(Artista artista,
+			@Context HttpServletRequest httpServletRequest) {
 		try
 		{
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+            if(usuario == null || !usuario.getRol().esAdministrador())
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
 			if (!artistaDAO.existe(artista)) {
 				artistaDAO.guardar(artista);
 				return Response.ok().entity(artista).build();
@@ -116,9 +127,15 @@ public class ArtistaController {
 	@PUT
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response editarArtista(Artista artista) {
+	public Response editarArtista(Artista artista,
+			@Context HttpServletRequest httpServletRequest) {
 		try
 		{
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+            if(usuario == null || !usuario.getRol().esAdministrador())
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
 			Artista art = artistaDAO.encontrar(artista.getId());
 			if (art != null) {
 				artistaDAO.actualizar(artista);
@@ -167,9 +184,15 @@ public class ArtistaController {
 	@DELETE
 	@Path("{idArtista}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminarArtista(@PathParam("idArtista") Long idArtista) {
+	public Response eliminarArtista(@PathParam("idArtista") Long idArtista,
+			@Context HttpServletRequest httpServletRequest) {
 		try
 		{
+            String token = JWToken.getToken(httpServletRequest);
+	        String usrnmOwner = JWToken.parseToken(token);
+	        Usuario usuario = usuDAO.encontrarPorNombre(usrnmOwner);
+            if(usuario == null || !usuario.getRol().esAdministrador())
+				return Response.status(Response.Status.UNAUTHORIZED).entity("No tiene permisos").build();
 			Artista art = artistaDAO.encontrar(idArtista);
 			if (art != null) {
 				artistaDAO.eliminar(art);

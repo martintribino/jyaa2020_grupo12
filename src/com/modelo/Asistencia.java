@@ -4,23 +4,18 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 @Entity
-@Table(name = "asistencia",uniqueConstraints={@UniqueConstraint(name = "usuario_obra", columnNames={"usuario_id", "obra_id"})})
+@Table(name = "asistencia",uniqueConstraints={@UniqueConstraint(name = "usuario_actividad", columnNames={"usuario_id", "actividad_id"})})
 public class Asistencia implements Serializable {
 
 	/**
@@ -35,46 +30,32 @@ public class Asistencia implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonIgnore
 	private Long id;
 	@Column(name="qrcode", unique = true, updatable = true)
-    @JsonProperty
 	private String qrcode;
 	@Basic
 	private Asistencia.Estados estado;
-	@OneToOne(
-			optional = false,
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.REFRESH},
-			orphanRemoval = true
-	)
-	@JsonIgnore
+	@ManyToOne(optional = false)
 	@JoinColumn(name="usuario_id", nullable = false)
 	private Usuario usuario;
-	@OneToOne(
-			optional = false,
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.REFRESH},
-			orphanRemoval = true
-	)
-	@JsonIgnore
-	@JoinColumn(name="obra_id", nullable = false)
-	private Obra obra;
+	@ManyToOne(optional = false)
+	@JoinColumn(name="actividad_id", nullable = false)
+	private Actividad actividad;
 
 	public Asistencia() {
 		UUID uuid = UUID.randomUUID();
 		this.setQrcode(uuid.toString());
-		this.setEstado(Asistencia.Estados.NOASISTIO);
-		this.setUsuario(new Usuario());
-		this.setObra(new Obra());
+		this.setEstado(Asistencia.Estados.ACTIVA);
+		this.setUsuario(null);
+		this.setActividad(null);
 	}
 
-	public Asistencia(Usuario usuario, Obra obra) {
+	public Asistencia(Usuario usuario, Actividad actividad) {
 		UUID uuid = UUID.randomUUID();
 		this.setQrcode(uuid.toString());
 		this.setEstado(Asistencia.Estados.ACTIVA);
 		this.setUsuario(usuario);
-		this.setObra(obra);
+		this.setActividad(actividad);
 	}
 
 	public Long getId() {
@@ -93,14 +74,6 @@ public class Asistencia implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public Obra getObra() {
-		return obra;
-	}
-
-	public void setObra(Obra obra) {
-		this.obra = obra;
-	}
-
 	public String getQrcode() {
 		return qrcode;
 	}
@@ -115,6 +88,41 @@ public class Asistencia implements Serializable {
 
 	public void setEstado(Asistencia.Estados estado) {
 		this.estado = estado;
+	}
+
+	public Actividad getActividad() {
+		return actividad;
+	}
+
+	public void setActividad(Actividad actividad) {
+		this.actividad = actividad;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Asistencia other = (Asistencia) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+			else if (!qrcode.equals(other.qrcode))
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }
