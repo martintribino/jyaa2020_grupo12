@@ -38,7 +38,7 @@ public class ActividadDAOJPA extends GenericDAOJPA<Actividad> implements IActivi
 					.createQuery("SELECT a FROM Actividad a WHERE (:ainicio <= a.hastaDate and :afin >= a.desdeDate and a.espacio.id = :aespacio)", Actividad.class);
 			consulta.setParameter("ainicio", actividad.getDesdeDate(), TemporalType.TIMESTAMP);
 			consulta.setParameter("afin", actividad.getHastaDate(), TemporalType.TIMESTAMP);
-			consulta.setParameter("aespacio", actividad.getEspacio().getId());
+			consulta.setParameter("aespacio", actividad.getEspacioId());
 			list = consulta.getResultList();
 			transaction.commit();
 			return list.isEmpty();
@@ -63,7 +63,7 @@ public class ActividadDAOJPA extends GenericDAOJPA<Actividad> implements IActivi
 					.createQuery("SELECT a FROM Actividad a WHERE ((:ainicio <= a.hastaDate and :afin >= a.desdeDate and a.espacio.id = :aespacio) and (a.id <> :aid))", Actividad.class);
 			consulta.setParameter("ainicio", actividad.getDesdeDate(), TemporalType.TIMESTAMP);
 			consulta.setParameter("afin", actividad.getHastaDate(), TemporalType.TIMESTAMP);
-			consulta.setParameter("aespacio", actividad.getEspacio().getId());
+			consulta.setParameter("aespacio", actividad.getEspacioId());
 			consulta.setParameter("aid", actividad.getId());
 			list = consulta.getResultList();
 			transaction.commit();

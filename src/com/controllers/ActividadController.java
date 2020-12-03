@@ -34,11 +34,19 @@ public class ActividadController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarActividades() {
-		List<Actividad> actividades = actdao.listar();
-		if (actividades.isEmpty())
-			return Response.noContent().build();
-		else
-			return Response.ok().entity(actividades).build();
+		try
+		{
+			List<Actividad> actividades = actdao.listar();
+			if (actividades.isEmpty())
+				return Response.noContent().build();
+			else
+				return Response.ok().entity(actividades).build();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo listar las actividades").build();
+		}
 	}
 
 	@GET
@@ -89,7 +97,7 @@ public class ActividadController {
 		catch(Exception ex)
 		{
 			System.out.println(ex);
-			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo guardar la actividad").build();
+			return Response.status(Response.Status.BAD_REQUEST).entity("No se pudo crear la actividad").build();
 		}
 	}
 

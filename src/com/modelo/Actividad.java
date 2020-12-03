@@ -10,7 +10,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,6 +23,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -72,9 +72,7 @@ public class Actividad implements Serializable {
 	private int entradasVendidas = 0;
 	@OneToOne(
 			optional = true,
-			fetch = FetchType.EAGER,
-			cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE},
-			orphanRemoval = false
+			cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE}
 	)
 	private Obra obra = null;
 	@ManyToOne(optional = false)
@@ -83,9 +81,9 @@ public class Actividad implements Serializable {
 	@ManyToOne(optional = false)
 	@JoinColumn(name="edicion")
 	private Edicion edicion;
-	@OneToMany(mappedBy="actividad",
-			cascade={CascadeType.ALL},
-			orphanRemoval = true
+	@OneToMany(
+			mappedBy="actividad",
+			cascade={CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE}
 	)
 	@JsonIgnore
     private Set<Asistencia> asistencias = new HashSet<Asistencia>();
@@ -125,18 +123,30 @@ public class Actividad implements Serializable {
 		this.nombre = nombre;
 	}
 
+	public Long getObraId() {
+		return obra!=null ? obra.getId() : null;
+	}
+
+	@JsonIgnore
 	public Obra getObra() {
 		return obra;
 	}
 
+	@JsonProperty
 	public void setObra(Obra obra) {
 		this.obra = obra;
 	}
 
+	public Long getEspacioId() {
+		return espacio!=null ? espacio.getId() : null;
+	}
+
+	@JsonIgnore
 	public Espacio getEspacio() {
 		return espacio;
 	}
 
+	@JsonProperty
 	public void setEspacio(Espacio espacio) {
 		this.espacio = espacio;
 	}
@@ -221,7 +231,10 @@ public class Actividad implements Serializable {
 			return false;
 		Actividad other = (Actividad) obj;
 		if (id == null) {
-			return false;
+			if (other.id != null)
+				return false;
+			else if (!nombre.equals(other.nombre))
+				return false;
 		} else if (!id.equals(other.id))
 			return false;
 		return true;

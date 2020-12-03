@@ -14,6 +14,38 @@ h4
     justify-content center
     margin 24px auto 12px auto
 
+h5
+  display flex
+  width 100%
+  justify-content center
+
+a
+  color white
+  &.entidad
+    background backBlack
+    border-radius 3px 0 0 3px
+    display inline-block
+    height 26px
+    line-height 26px
+    padding 0 20px 0 10px
+    position relative
+    margin 0 10px 10px 0
+    text-decoration none
+    -webkit-transition color 0.2s
+    &:hover
+      background backRed
+      &:after
+        border-left-color backRed
+    &:after
+      background backBlack2
+      border-bottom 13px solid transparent
+      border-left 10px solid backBlack
+      border-top 13px solid transparent
+      content ''
+      position absolute
+      right 0
+      top 0
+
 app-root
   width 100%
 
@@ -37,6 +69,12 @@ app-root
   width 75%
   @media screen and (max-width: sm)
     width 100%
+  .mat-header-cell
+    &.add-cell
+      display flex
+      justify-content center
+      max-width 75px
+      padding 0
   .mat-header-cell, .mat-cell
     display flex
     justify-content center
@@ -72,16 +110,120 @@ app-sidebar
   height 100%
   overflow auto
 
-app-usuarios, app-artistas, app-espacios, app-actividades, app-obras, app-ediciones, app-etiquetas, app-etiquetas-entidad
+app-usuarios, app-artistas, app-espacios, app-actividades, app-obras, app-ediciones, app-etiquetas, app-etiquetas-entidad, app-filtro-tabla
   display flex
   flex-direction column
   align-items center
   width 100%
 
-app-not-found, app-not-allowed, app-map, app-secure-img
+app-avatar1, app-avatar2, app-avatar3, app-avatar4, app-avatar5, app-avatar6, app-noavatar
+  display flex
+  justify-content center
+  position relative
+
+app-not-found, app-not-allowed, app-map
   display flex
   width 100%
   justify-content center
+
+app-secure-img
+  display flex
+  width 100%
+  height 100%
+  justify-content center
+
+app-carrusel-imagenes
+  margin-top 10px
+  .carrusel
+    .carousel
+      width 100%
+    .carousel > button[mat-icon-button]:last-of-type
+      right 5px
+      width auto
+    .carousel > button[mat-icon-button]:first-of-type
+      left 5px
+      width auto
+
+.edita-comp
+  display flex
+  width 100%
+  flex-direction column
+  align-items center
+  button
+    margin 2% auto
+
+.mat-radio-group
+  display flex
+  flex-direction row
+  justify-content center
+  flex-wrap wrap
+  width 100%
+  .mat-radio-button
+    display flex
+    flex-direction row
+    justify-content center
+    align-items center
+    margin-bottom 1em
+    width 33%
+    @media screen and (max-width: sm)
+      width 50%
+    .mat-radio-container
+      display none
+    .mat-radio-label-content.mat-radio-label-before
+      padding-right 0
+    .mat-radio-label
+      width auto
+
+.mat-card-header
+  display flex
+  width 100%
+  justify-content center
+  .mat-card-header-text
+    width 100%
+    .mat-card-title
+      margin-top 10px
+    .mat-card-title, .mat-card-subtitle
+      display flex
+      width 100%
+      justify-content center
+
+.circle-back
+  fill backBlack2
+  stroke backRed
+  stroke-width 2px
+.avatar-upload
+  display flex
+  width 100%
+  justify-content center
+  .photo-icon-svg-back
+    position absolute
+    top 90px
+    @media screen and (max-width: sm)
+      top 80px
+    right calc(50% - 60px)
+    @media screen and (max-width: sm)
+      right calc(50% - 50px)
+    cursor pointer
+  &.usuarios
+    .svg-back
+      cursor default
+      .circle-back
+        fill backRed
+
+.svg-back
+  cursor pointer
+  width 115px
+  height 115px
+  @media screen and (max-width: sm)
+    width 100px
+    height 100px
+  &:hover
+    .circle-back
+      fill backRed
+
+.mat-radio-checked
+  .circle-back
+    fill backRed
 
 .nav-container
   display flex
@@ -116,6 +258,9 @@ button
       background-color borderRed
       border solid 1px borderRed
   &.submit-button
+    &:disabled
+      background-color backDisabled
+      border solid 1px backDisabled
     &:not(:disabled)
       background-color backRed
       border solid 1px borderRed
@@ -229,11 +374,16 @@ button
       padding 4px
       &:hover
         color backRed
+      &.favorito
+        color backRed
+      &.mat-badge-small.mat-badge-overlap.mat-badge-after
+        .mat-badge-content
+          right -2px
+          top 2px
   .avatar-upload
     margin-top 0px
-    position relative
-    max-width 200px
-    margin 20px auto 10px auto
+    display flex
+    width 100%
     .default-avatar
       width 175px
       box-shadow 0px 2px 4px 0px rgba(0, 0, 0, 0.12)
@@ -256,17 +406,14 @@ button
   padding 5px
   @media screen and (max-width: sm)
     width 100%
-  input
-    border  1px solid hoverRed
-    width 100%
-    padding 12px
-    color white
-    font-size 1.1em
-    background-color backBlack2
-    &:focus
-      border  1px solid hoverRed
+
+app-filtro-tabla
+  width 75%
+  margin 0 auto
 
 @media screen and (max-width: sm)
+  app-filtro-tabla
+    width 90%
   .desktop
     display none
   .mobile
